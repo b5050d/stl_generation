@@ -59,3 +59,6 @@ def test_convert_matrix_to_binary():
     assert (ans == np.array([[0, 0, 0], [1, 1, 1]])).all(), 'Matrix should be binary'
 
 
+def test_pad_image_matrix():
+    starting_array = np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]])
+    

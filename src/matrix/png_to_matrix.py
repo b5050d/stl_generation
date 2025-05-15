@@ -19,6 +19,9 @@ def convert_matrix_to_binary(matrix: np.ndarray, cutoff: int):
     return matrix > cutoff
 
 
+
+
+
 if __name__ == "__main__":
     png_path = "images/c.png"
     matrix = load_png_to_gray_matrix(png_path)
