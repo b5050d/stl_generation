@@ -1,4 +1,5 @@
 
+from matrix_to_edges import hollow_out_shapes
 
 
 import pytest
@@ -19,8 +20,8 @@ def get_3x3_in_5x5_matrix():
     ])
 
 
-def test_hollow_out_shapes(get_5x5_matrix):
-    mat5x5 = get_5x5_matrix
+def test_hollow_out_shapes(get_5x5_ones_matrix):
+    mat5x5 = get_5x5_ones_matrix
     
     hollowed_out = hollow_out_shapes(mat5x5)
     
