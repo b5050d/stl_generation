@@ -1,6 +1,4 @@
-
 from matrix_to_edges import hollow_out_shapes
-
 
 import pytest
 import numpy as np
