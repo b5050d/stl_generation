@@ -3,9 +3,10 @@ import pytest
 import numpy as np
 import cv2
 
-from src.matrix.png_to_matrix import (
+from png_to_matrix import (
     load_png_to_gray_matrix,
-    convert_matrix_to_binary
+    convert_matrix_to_binary,
+    pad_matrix
 )
 
 # Create a test image for consistent testing
@@ -58,7 +59,16 @@ def test_convert_matrix_to_binary():
     assert ans.min() == 0 and ans.max() == 1, 'Matrix should be binary'
     assert (ans == np.array([[0, 0, 0], [1, 1, 1]])).all(), 'Matrix should be binary'
 
-
 def test_pad_image_matrix():
-    starting_array = np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]])
-    
+    starting_array = np.ones((100, 100), dtype=int)
+    padded_array = pad_matrix(starting_array, 0.1)
+    assert padded_array.shape == (120, 120), 'Matrix should match test image dimensions'
+    assert (padded_array[10:110, 10:110] == starting_array).all(), 'Matrix should match test image dimensions'
+    assert padded_array[0,0] == 255
+    assert padded_array[119,119] == 255
+
+    padded_array = pad_matrix(starting_array, 0.2)
+    assert padded_array.shape == (140, 140), 'Matrix should match test image dimensions'
+    assert (padded_array[20:120, 20:120] == starting_array).all(), 'Matrix should match test image dimensions'
+    assert padded_array[0,0] == 255
+    assert padded_array[139,139] == 255
