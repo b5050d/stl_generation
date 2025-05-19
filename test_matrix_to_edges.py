@@ -2,7 +2,8 @@ from matrix_to_edges import (
     hollow_out_shapes,
     check_8_neighbors,
     recreate_shape_from_counts,
-    create_count_matrix
+    create_count_matrix,
+    final_hollowing,
 )
 
 import pytest
@@ -56,36 +57,25 @@ def test_create_count_matrix(get_3x3_in_5x5_matrix):
     ])
     assert np.array_equal(count_matrix, expected_matrix)
 
+from utils.plotting import plot_image_matrix
 
+def test_final_hollowing():
+    count_matrix = np.array([
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+    ])
+    expected_matrix = np.array([
+        [1, 1, 1],
+        [1, 0, 0],
+        [0, 1, 1],
+    ])
+    ans = final_hollowing(count_matrix)
+    plot_image_matrix(ans)
+    assert np.array_equal(ans, expected_matrix)
+ 
 
-@pytest.mark.skip
 def test_hollow_out_shapes(get_5x5_zeros_matrix, get_3x3_in_5x5_matrix):
-    # mat5x5 = get_5x5_zeros_matrix
-    # hollowed_out = hollow_out_shapes(mat5x5)
-    
-    # expected = np.array([
-    #     [0, 0, 0, 0, 0],
-    #     [0, 1, 1, 1, 0],
-    #     [0, 1, 1, 1, 0],
-    #     [0, 1, 1, 1, 0],
-    #     [0, 0, 0, 0, 0]
-    # ])
-
-    # assert hollowed_out.shape == mat5x5.shape
-    # assert np.array_equal(hollowed_out, expected)
-    
-    # mat3x3 = get_3x3_in_5x5_matrix
-    # hollowed_out = hollow_out_shapes(mat3x3)
-    # expected = np.array([
-    #     [1, 1, 1, 1, 1],
-    #     [1, 0, 0, 0, 1],
-    #     [1, 0, 1, 0, 1],
-    #     [1, 0, 0, 0, 1],
-    #     [1, 1, 1, 1, 1]
-    # ])
-
-    # assert hollowed_out.shape == mat3x3.shape
-    # assert np.array_equal(hollowed_out, expected)
 
     input_matrix = np.array([
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -107,7 +97,7 @@ def test_hollow_out_shapes(get_5x5_zeros_matrix, get_3x3_in_5x5_matrix):
         [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
         [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
         [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
-        [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+        [1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ])
     

@@ -61,6 +61,11 @@ def create_count_matrix(matrix: np.ndarray):
                 count_matrix[i,j] = score
     return count_matrix
 
+def final_hollowing(count_matrix: np.ndarray):
+    result_matrix = np.where((count_matrix >= 4) & (count_matrix <= 6), 0, 1)
+    return result_matrix
+
+
 def hollow_out_shapes(matrix: np.ndarray):
     """
     Removes the inner parts of shapes in a binary matrix
@@ -82,50 +87,24 @@ def hollow_out_shapes(matrix: np.ndarray):
         # Count the number of neighbors for each point
         count_matrix = create_count_matrix(last_matrix)
 
-        sns.heatmap(count_matrix, annot=True, fmt='d', cmap='YlGnBu')
-        plt.title('Heatmap with Values')
-        plt.show()
+        # sns.heatmap(count_matrix, annot=True, fmt='d', cmap='YlGnBu')
+        # plt.title('Heatmap with Values')
+        # plt.show()
 
         working_matrix = recreate_shape_from_counts(count_matrix)
         if np.array_equal(working_matrix, last_matrix):
             break
         last_matrix = working_matrix
 
+    count_matrix = create_count_matrix(working_matrix)
 
-    # sns.heatmap(empty_matrix, annot=True, fmt='d', cmap='YlGnBu')
-    # plt.title('Heatmap with Values')
+    # sns.heatmap(count_matrix, annot=True, fmt='d', cmap='YlGnBu')
+    # plt.title('FINAL* Heatmap with Values')
     # plt.show()
 
-    # plot_image_matrix(working_matrix)
+    # Now need to get rid of threes and 8s and such
+    working_matrix = final_hollowing(count_matrix)
     return working_matrix
-
-    # for i in range(rows):
-    #     for j in range(cols):
-    #         current = matrix[i, j]
-    #         if current == OCCUPIED:
-    #             score = 0
-    #             # Check up
-    #             if i > 0:
-    #                 if matrix[i-1, j] == OCCUPIED:
-    #                     score += 1
-    #             # Check right
-    #             if j < cols - 1:
-    #                 if matrix[i, j+1] == OCCUPIED:
-    #                     score += 1
-    #             # Check down
-    #             if i < rows - 1:
-    #                 if matrix[i+1, j] == OCCUPIED:
-    #                     score += 1
-    #             # Check left
-    #             if j > 0:
-    #                 if matrix[i, j-1] == OCCUPIED:
-    #                     score += 1
-    #             if score == 4 or score == 1:
-    #                 empty_matrix[i, j] = EMPTY
-    #             else:
-    #                 empty_matrix[i, j] = matrix[i, j]
-    # plot_image_matrix(empty_matrix)
-    # return empty_matrix
 
 if __name__ == "__main__":
     input_matrix = np.array([
