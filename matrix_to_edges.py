@@ -106,19 +106,50 @@ def hollow_out_shapes(matrix: np.ndarray):
     working_matrix = final_hollowing(count_matrix)
     return working_matrix
 
-if __name__ == "__main__":
-    input_matrix = np.array([
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1],
-        [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    ])
-    plot_image_matrix(input_matrix)
+import cv2
+def collect_edges(matrix: np.ndarray):
+    """
+    Should find all of the edges in a hollowed out
+    shape
+    """
+    # Assuming the matrix is in the 1/0 format from earlier
+    matrix = np.where(matrix == 1, 255, 0)
+    matrix = matrix.astype(np.uint8)
+    inverted = cv2.bitwise_not(matrix)
+    contours, hierarchy = cv2.findContours(inverted, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    return contours
 
-    output_matrix = hollow_out_shapes(input_matrix)
-    plot_image_matrix(output_matrix)
+
+
+        
+
+if __name__ == "__main__":
+    # input_matrix = np.array([
+    #     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    #     [1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1],
+    #     [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+    #     [1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+    #     [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+    #     [1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+    #     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    #     [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+    #     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    # ])
+    sample_matrix = np.array([
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
+        [1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1],
+        [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+        [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+        [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+        [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+        [1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    ], dtype=np.uint8)
+
+    edges = collect_edges(sample_matrix)
+    print(edges)
+    # plot_image_matrix(input_matrix)
+
+    # output_matrix = hollow_out_shapes(input_matrix)
+    # plot_image_matrix(output_matrix)

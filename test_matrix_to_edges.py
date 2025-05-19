@@ -4,6 +4,7 @@ from matrix_to_edges import (
     recreate_shape_from_counts,
     create_count_matrix,
     final_hollowing,
+    collect_edges,
 )
 
 import pytest
@@ -71,10 +72,8 @@ def test_final_hollowing():
         [0, 1, 1],
     ])
     ans = final_hollowing(count_matrix)
-    plot_image_matrix(ans)
     assert np.array_equal(ans, expected_matrix)
  
-
 def test_hollow_out_shapes(get_5x5_zeros_matrix, get_3x3_in_5x5_matrix):
 
     input_matrix = np.array([
@@ -104,3 +103,43 @@ def test_hollow_out_shapes(get_5x5_zeros_matrix, get_3x3_in_5x5_matrix):
     hollowed_out = hollow_out_shapes(input_matrix)
     assert hollowed_out.shape == input_matrix.shape
     assert np.array_equal(hollowed_out, expected_matrix)
+
+
+def test_collect_edges():
+    sample_matrix = np.array([
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
+        [1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1],
+        [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+        [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+        [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+        [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+        [1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    ], dtype=np.uint8)
+
+    edges = collect_edges(sample_matrix)
+    assert len(edges)==1
+    assert type(edges) == tuple
+    assert type(edges[0]) == np.ndarray
+
+    sample_matrix = np.array([
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1],
+        [1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1],
+        [1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1],
+        [1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1],
+        [1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1],
+        [1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    ], dtype=np.uint8)
+
+    edges = collect_edges(sample_matrix)
+    assert len(edges)==2
+    assert type(edges) == tuple
+    assert type(edges[0]) == np.ndarray
+    assert type(edges[1]) == np.ndarray
+
+    
+    
