@@ -120,7 +120,7 @@ def test_collect_edges():
 
     edges = collect_edges(sample_matrix)
     assert len(edges)==1
-    assert type(edges) == tuple
+    assert type(edges) == list
     assert type(edges[0]) == np.ndarray
 
     sample_matrix = np.array([
@@ -137,7 +137,7 @@ def test_collect_edges():
 
     edges = collect_edges(sample_matrix)
     assert len(edges)==2
-    assert type(edges) == tuple
+    assert type(edges) == list
     assert type(edges[0]) == np.ndarray
     assert type(edges[1]) == np.ndarray
 

@@ -117,7 +117,11 @@ def collect_edges(matrix: np.ndarray):
     matrix = matrix.astype(np.uint8)
     inverted = cv2.bitwise_not(matrix)
     contours, hierarchy = cv2.findContours(inverted, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    return contours
+    
+    result = []
+    for contour in contours:
+        result.append(contour.reshape(-1, 2))
+    return result
 
 
 
