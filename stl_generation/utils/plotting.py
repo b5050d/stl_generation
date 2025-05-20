@@ -6,16 +6,14 @@ def plot_image_matrix(matrix: np.ndarray):
     """
     Plots a grayscale matrix
     """
-    plt.imshow(matrix, cmap='gray')
-    plt.gca().invert_yaxis()       # match image coords (optional)
+    plt.imshow(matrix, cmap="gray")
+    plt.gca().invert_yaxis()  # match image coords (optional)
     plt.show()
 
 
 def plot_edge_array(edge_array: np.ndarray):
     # edge arrays are of shape (len, 2)
-    
-    plt.plot(edge_array[:, 0], edge_array[:, 1], 'r-')
+
+    plt.plot(edge_array[:, 0], edge_array[:, 1], "r-")
     # plt.gca().invert_yaxis()       # match image coords (optional)
     plt.show()
-
-

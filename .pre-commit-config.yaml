@@ -1,0 +1,27 @@
+# pre-commit config
+
+repos:
+  - repo: https://github.com/psf/black
+    rev: 23.3.0  # Use the latest stable version
+    hooks:
+      - id: black
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.1.0
+    hooks:
+      - id: flake8
+        args:
+          - --ignore
+          - E203,W503,E501
+          - --max-line-length
+          - '88'
+          - --exclude
+          - build,dist,__pycache__,venv
+
+  - repo: local
+    hooks:
+      - id: pytest
+        name: Run pytest
+        entry: pytest
+        language: system
+        pass_filenames: false

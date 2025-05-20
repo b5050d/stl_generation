@@ -3,11 +3,8 @@ The purpose of these methods is to start from a binary matrix and end up with a 
 """
 
 import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
+import cv2
 
-# for dev only
-from utils.plotting import plot_image_matrix
 
 def check_8_neighbors(matrix: np.ndarray, i: int, j: int):
     """
@@ -17,38 +14,39 @@ def check_8_neighbors(matrix: np.ndarray, i: int, j: int):
     rows, cols = matrix.shape
     neighbors = []
     # Up
-    if i > 0: 
-        neighbors.append(matrix[i-1, j])
+    if i > 0:
+        neighbors.append(matrix[i - 1, j])
     # Upper right
     if i > 0 and j < cols - 1:
-        neighbors.append(matrix[i-1, j+1])
+        neighbors.append(matrix[i - 1, j + 1])
     # Right
     if j < cols - 1:
-        neighbors.append(matrix[i, j+1])
+        neighbors.append(matrix[i, j + 1])
     # Lower Right
     if i < rows - 1 and j < cols - 1:
-        neighbors.append(matrix[i+1, j+1])
+        neighbors.append(matrix[i + 1, j + 1])
     # Down
     if i < rows - 1:
-        neighbors.append(matrix[i+1, j])
+        neighbors.append(matrix[i + 1, j])
     # Lower Left
     if i < rows - 1 and j > 0:
-        neighbors.append(matrix[i+1, j-1])
+        neighbors.append(matrix[i + 1, j - 1])
     # Left
     if j > 0:
-        neighbors.append(matrix[i, j-1])
+        neighbors.append(matrix[i, j - 1])
     # Upper Left
     if i > 0 and j > 0:
-        neighbors.append(matrix[i-1, j-1])
+        neighbors.append(matrix[i - 1, j - 1])
     return neighbors
+
 
 def recreate_shape_from_counts(count_matrix: np.ndarray):
     threshold = 3
     result_matrix = np.where(count_matrix < threshold, 1, 0)
     return result_matrix
-    
+
+
 def create_count_matrix(matrix: np.ndarray):
-    EMPTY = 1
     OCCUPIED = 0
     rows, cols = matrix.shape
     count_matrix = np.zeros((rows, cols), dtype=int)
@@ -58,8 +56,9 @@ def create_count_matrix(matrix: np.ndarray):
             if current == OCCUPIED:
                 neighbors = check_8_neighbors(matrix, i, j)
                 score = neighbors.count(OCCUPIED)
-                count_matrix[i,j] = score
+                count_matrix[i, j] = score
     return count_matrix
+
 
 def final_hollowing(count_matrix: np.ndarray):
     result_matrix = np.where((count_matrix >= 4) & (count_matrix <= 6), 0, 1)
@@ -73,11 +72,6 @@ def hollow_out_shapes(matrix: np.ndarray):
     # who are also 0 (meaning they are the shape)
 
     """
-    EMPTY = 1
-    OCCUPIED = 0
-
-    rows, cols = matrix.shape
-
     # copy the matrix
     last_matrix = matrix.copy()
     working_matrix = matrix.copy()
@@ -87,10 +81,6 @@ def hollow_out_shapes(matrix: np.ndarray):
         # Count the number of neighbors for each point
         count_matrix = create_count_matrix(last_matrix)
 
-        # sns.heatmap(count_matrix, annot=True, fmt='d', cmap='YlGnBu')
-        # plt.title('Heatmap with Values')
-        # plt.show()
-
         working_matrix = recreate_shape_from_counts(count_matrix)
         if np.array_equal(working_matrix, last_matrix):
             break
@@ -98,15 +88,11 @@ def hollow_out_shapes(matrix: np.ndarray):
 
     count_matrix = create_count_matrix(working_matrix)
 
-    # sns.heatmap(count_matrix, annot=True, fmt='d', cmap='YlGnBu')
-    # plt.title('FINAL* Heatmap with Values')
-    # plt.show()
-
     # Now need to get rid of threes and 8s and such
     working_matrix = final_hollowing(count_matrix)
     return working_matrix
 
-import cv2
+
 def collect_edges(matrix: np.ndarray):
     """
     Should find all of the edges in a hollowed out
@@ -116,16 +102,15 @@ def collect_edges(matrix: np.ndarray):
     matrix = np.where(matrix == 1, 255, 0)
     matrix = matrix.astype(np.uint8)
     inverted = cv2.bitwise_not(matrix)
-    contours, hierarchy = cv2.findContours(inverted, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    
+    contours, hierarchy = cv2.findContours(
+        inverted, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE
+    )
+
     result = []
     for contour in contours:
         result.append(contour.reshape(-1, 2))
     return result
 
-
-
-        
 
 if __name__ == "__main__":
     # input_matrix = np.array([
@@ -139,17 +124,20 @@ if __name__ == "__main__":
     #     [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
     #     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     # ])
-    sample_matrix = np.array([
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
-        [1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1],
-        [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
-        [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
-        [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
-        [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
-        [1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    ], dtype=np.uint8)
+    sample_matrix = np.array(
+        [
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
+            [1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1],
+            [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+            [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+            [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+            [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+            [1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        ],
+        dtype=np.uint8,
+    )
 
     edges = collect_edges(sample_matrix)
     print(edges)
