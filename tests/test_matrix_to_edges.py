@@ -10,6 +10,8 @@ from stl_generation.matrix_to_edges import (
     create_count_matrix,
     final_hollowing,
     collect_edges,
+    scale_edges,
+    smoothing_routine_1,
 )
 
 # from stl_generation.utils.plotting import plot_image_matrix
@@ -168,3 +170,36 @@ def test_collect_edges():
     assert type(edges) is list
     assert type(edges[0]) is np.ndarray
     assert type(edges[1]) is np.ndarray
+
+
+def test_scale_edges():
+    sample_edges = [
+        np.array([[0, 0], [1, 0], [1, 1], [0, 1]]),
+        np.array([[2, 2], [3, 2], [3, 3], [2, 3]]),
+    ]
+    scalar = 256
+    scaled_edges = scale_edges(sample_edges, scalar)
+    assert len(scaled_edges) == len(sample_edges)
+    for i in range(len(sample_edges)):
+        assert np.array_equal(scaled_edges[i], sample_edges[i] * scalar)
+
+
+def test_smoothing_routine_1():
+    """
+    What is smoothing routine 1?
+    """
+    sample_edges = [
+        np.array([[0, 0], [16, 0], [16, 16], [32, 16], [32, 32]]),
+        np.array([[128, 0], [0, 128], [128, 128]]),
+    ]
+
+    expected_0 = np.array([[24, 16], [8, 8], [24, 8], [24, 24], [16, 8]])
+    expected_1 = np.array([[64, 128], [128, 64], [64, 64]])
+    smoothed_edges = smoothing_routine_1(sample_edges)
+    assert len(smoothed_edges) == len(sample_edges)
+
+    assert smoothed_edges[0].shape == sample_edges[0].shape
+    print(smoothed_edges[0])
+    print(expected_0)
+    assert np.array_equal(smoothed_edges[0], expected_0)
+    assert np.array_equal(smoothed_edges[1], expected_1)
