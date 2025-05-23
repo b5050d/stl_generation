@@ -2,14 +2,14 @@ import numpy as np
 import mapbox_earcut as earcut
 from matplotlib import pyplot as plt
 
-def tesselate(shape: np.ndarray):
+
+def tesselate(shape: np.ndarray, plot=False):
     # Alright we need to tesselate a shape here
 
     # What form does mapbox_earcut need the shape in?
     # looks like numpy array of (x,2)
 
     assert shape.ndim == 2, "Shape must be a 2D array"
-
 
     # not sure why this is done
     rings = np.array([len(shape)], dtype=np.uint32)
@@ -20,14 +20,15 @@ def tesselate(shape: np.ndarray):
     print(f"Indices: {indices}")
     print(f"Rings: {rings}")
 
+    if plot:
+        # Plotting the result
+        for i in range(0, len(indices), 3):
+            triangle = shape[indices[i : i + 3]]
+            plt.fill(*zip(*triangle), alpha=0.4, edgecolor="black")
+        plt.show()
 
-    # Plotting the result
-    for i in range(0, len(indices), 3):
-        triangle = shape[indices[i:i+3]]
-        plt.fill(*zip(*triangle), alpha=0.4, edgecolor='black')
-    plt.show()
+    return indices
 
-    return 1
 
 if __name__ == "__main__":
     # Test the function with a sample shape

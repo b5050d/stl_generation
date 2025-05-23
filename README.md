@@ -1,7 +1,10 @@
 # stl_generation
 A repo to house my stl generation methods and experiments
 
-Can start with just converting png to edges
+
+TODO:
+- Smooth out the edges of the shapes found
+- Add in tesselation for the area between 2 shapes (or more)
 
 Alright so this project has a few components
 - Image preparation (images move from png to black and white, to binary matrix (1's and 0's))
