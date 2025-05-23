@@ -2,3 +2,4 @@ numpy==2.2.5
 opencv-python==4.11.0.86
 matplotlib==3.10.3
 seaborn==0.13.2
+mapbox_earcut==1.0.3
