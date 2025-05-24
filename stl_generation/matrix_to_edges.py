@@ -159,6 +159,69 @@ def drop_points_on_edges(edges, factor: int = 2):
     return new_edges
 
 
+def find_closest_points(edge1, edge2):
+    """
+    Finds the closest points between two edges
+    """
+    min_so_far = ()
+    min_distance = float("inf")
+    checked = {}
+    for point1 in edge1:
+        for point2 in edge2:
+            if (tuple(point1), tuple(point2)) in checked:
+                # If we have already checked this pair, skip it
+                continue
+            elif (tuple(point2), tuple(point1)) in checked:
+                # If we have already checked this pair in reverse, skip it
+                continue
+            # Calculate the distance between the two points
+            distance = np.linalg.norm(point1 - point2)
+            checked[(tuple(point1), tuple(point2))] = distance
+
+            if distance < min_distance:
+                min_distance = distance
+                min_so_far = (tuple(point1), tuple(point2))
+
+    # convert back to something that makes sense
+    min_so_far = np.array(min_so_far)
+    assert min_so_far.shape == (2, 2), "Expected shape to be (2, 2)"
+    return min_so_far
+
+
+def np_index(array, target):
+    """
+    A version of .index (for lists) that works with numpy arrays.
+
+    Returns the index of the first occurrence of target in array.
+    """
+    matches = np.all(array == target, axis=1)
+    index = np.where(matches)[0]
+    return index[0]
+
+
+def create_single_edge_from_shape_in_shape(edge1, edge2):
+    """
+    Creates a single edge from an edge that has another shape inside it.
+    """
+
+    closest_points = find_closest_points(
+        edge1, edge2
+    )  # Ensure the closest points are calculated
+
+    index1 = np_index(edge1, closest_points[0])
+    index2 = np_index(edge2, closest_points[1])
+
+    new_list = edge1[:index1]
+    new_list = np.concatenate((new_list, closest_points), axis=0)
+    new_list = np.concatenate((new_list, edge2[:index2][::-1]), axis=0)
+    new_list = np.concatenate((new_list, edge2[index2 + 1 :][::-1]), axis=0)
+    new_list = np.concatenate((new_list, closest_points[::-1]), axis=0)
+    new_list = np.concatenate((new_list, edge1[index1 + 1 :]), axis=0)
+
+    assert new_list.shape[1] == 2, "Expected shape to be (N, 2)"
+    return new_list
+
+
 if __name__ == "__main__":
     sample_edges = [
         np.array([[0, 0], [16, 0], [16, 16], [32, 16], [32, 32]]),
