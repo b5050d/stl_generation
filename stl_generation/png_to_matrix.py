@@ -18,6 +18,7 @@ def convert_matrix_to_binary(matrix: np.ndarray, cutoff: int):
     Converts a grayscale matrix to a binary matrix
     """
     assert cutoff >= 0 and cutoff <= 255, "Cutoff must be between 0 and 255"
+
     return matrix > cutoff
 
 

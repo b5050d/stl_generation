@@ -3,9 +3,35 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Define the polygon's vertices
+# vertices = np.array(
+#     [[0.0, 0.0], [2.0, 0.0], [2.0, 2.0], [1.0, 3.0], [0.0, 2.0]], dtype=np.float64
+# )
+
+
 vertices = np.array(
-    [[0.0, 0.0], [2.0, 0.0], [2.0, 2.0], [1.0, 3.0], [0.0, 2.0]], dtype=np.float64
+    [
+        [0.0, 0.0],
+        [7.0, 0.0],
+        [7.0, 7.0],
+        [0.0, 7.0],
+    ]
 )
+
+vertices = np.array(
+    [
+        [0.0, 0.0],
+        [0.0, 7.0],
+        [7.0, 7.0],
+        [7.0, 0.0],
+        [5.0, 2.0],
+        [5.0, 5.0],
+        [2.0, 5.0],
+        [2.0, 2.0],
+        [5.0, 2.0],
+        [7.0, 0.0],
+    ]
+)
+
 
 # Define the rings array
 rings = np.array([len(vertices)], dtype=np.uint32)
