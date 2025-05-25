@@ -124,39 +124,89 @@ def scale_edges(edges: list, scalar: int):
     return scaled_edges
 
 
-def smoothing_routine_1(edges: list):
+def immediate_neighbor_linear_smoothing(edge):
     """
-    Smoothing routine 1
-
     The idea here is that every point should just be the average of its neighbors
 
     no values should not be an integer
     """
-    new_edges = []
-    for edge in edges:
-        new_edge = np.copy(edge)
-        for i in range(len(edge)):
-            if i == len(edge) - 1:
-                # We are at the end
-                before = edge[i - 1]
-                after = edge[0]
-            elif i == 0:
-                before = edge[-1]
-                after = edge[i + 1]
-            else:
-                before = edge[i - 1]
-                after = edge[i + 1]
-
-            new_edge[i] = np.mean((before, after), axis=0)
-        new_edges.append(new_edge)
-    return new_edges
+    new_edge = np.copy(edge)
+    for i in range(len(edge)):
+        if i == len(edge) - 1:
+            # We are at the end
+            before = edge[i - 1]
+            after = edge[0]
+        elif i == 0:
+            before = edge[-1]
+            after = edge[i + 1]
+        else:
+            before = edge[i - 1]
+            after = edge[i + 1]
+        new_edge[i] = np.mean((before, after), axis=0)
+    return new_edge
 
 
-def drop_points_on_edges(edges, factor: int = 2):
-    new_edges = []
-    for edge in edges:
-        new_edges.append(edge[::factor])
-    return new_edges
+def drop_points_on_edge(edge, factor: int = 2):
+    return edge[::factor]
+
+
+def get_unit_vector(p1, p2):
+    """
+    Compute the unit vector from point p1 to point p2.
+
+    Parameters:
+        p1 (array-like): Starting point (x1, y1)
+        p2 (array-like): Ending point (x2, y2)
+
+    Returns:
+        numpy.ndarray: A 2D unit vector pointing from p1 to p2
+    """
+    v = p2 - p1
+    norm = np.linalg.norm(v)
+    if norm == 0:
+        raise ValueError("Cannot compute unit vector for zero-length vector")
+    return v / norm
+
+
+def remove_any_duplicate_points(point_array):
+    seen = set()
+    cleaned_points = []
+    for pt in point_array:
+        t = tuple(pt)
+        if t not in seen:
+            seen.add(t)
+            cleaned_points.append(pt)
+    return np.array(cleaned_points)
+
+
+def remove_useless_points_on_edge(edge):
+    """
+    Drops points that do not provide any new information
+    """
+    new_edge = []
+    for i in range(len(edge)):
+        current_point = edge[i]
+        if i == 0:
+            last_point = edge[-1]
+        else:
+            last_point = edge[i - 1]
+        if i == len(edge) - 1:
+            next_point = edge[0]
+        else:
+            next_point = edge[i + 1]
+
+        assert not np.array_equal(last_point, current_point), "Error, repeated point"
+        assert not np.array_equal(current_point, next_point), "Error, repeated point"
+        assert not np.array_equal(last_point, next_point), "Error, repeated point"
+
+        a = get_unit_vector(last_point, current_point)
+        b = get_unit_vector(current_point, next_point)
+        if np.array_equal(a, b):
+            pass
+        else:
+            new_edge.append(current_point)
+
+    return np.array(new_edge)
 
 
 def find_closest_points(edge1, edge2):
@@ -223,12 +273,23 @@ def create_single_edge_from_shape_in_shape(edge1, edge2):
 
 
 if __name__ == "__main__":
-    sample_edges = [
-        np.array([[0, 0], [16, 0], [16, 16], [32, 16], [32, 32]]),
-    ]
+    inner_edge = np.array([[4, 3], [5, 4], [4, 5], [3, 4]])
+    outer_edge = np.array([[3, 1], [5, 1], [7, 4], [5, 7], [3, 7], [1, 4]])
 
-    ans = smoothing_routine_1(sample_edges)
-    print(ans)
+    combined_edge = create_single_edge_from_shape_in_shape(outer_edge, inner_edge)
+
+    print(combined_edge)
+
+    combined_edge = np.array(
+        [[3, 1][5, 1][7, 4][5, 4][4, 3][3, 4][4, 5][5, 4][7, 4][5, 7][3, 7][1, 4]]
+    )
+
+    # sample_edges = [
+    #     np.array([[0, 0], [16, 0], [16, 16], [32, 16], [32, 32]]),
+    # ]
+
+    # ans = smoothing_routine_1(sample_edges)
+    # print(ans)
     # input_matrix = np.array([
     #     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     #     [1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1],

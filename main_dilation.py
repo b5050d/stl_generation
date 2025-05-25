@@ -21,7 +21,13 @@ from stl_generation.matrix_to_edges import (
     # find_closest_points,
     # np_index,
 )
-from stl_generation.tesselation import tesselate
+from stl_generation.tesselation import (
+    tesselate,
+)
+
+from stl_generation.stl_generation import (
+    is_ccw,
+)
 
 from matplotlib import pyplot as plt
 import cv2
@@ -106,6 +112,12 @@ if __name__ == "__main__":
 
     plot_edge_array(combined_edge_cutting, False)
     plot_edge_array(combined_edge_holding, False)
+
+    assert is_ccw(combined_edge_cutting), "The cutting edge should be counter-clockwise"
+    assert is_ccw(combined_edge_holding), "The holding edge should be counter-clockwise"
+
+    # Alright generating the walls
+
     plt.show()
 
     tesselated_cutting = tesselate(combined_edge_cutting, True)

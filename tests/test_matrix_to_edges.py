@@ -11,7 +11,11 @@ from stl_generation.matrix_to_edges import (
     final_hollowing,
     collect_edges,
     scale_edges,
-    smoothing_routine_1,
+    immediate_neighbor_linear_smoothing,
+    drop_points_on_edge,
+    get_unit_vector,
+    remove_any_duplicate_points,
+    remove_useless_points_on_edge,
 )
 
 # from stl_generation.utils.plotting import plot_image_matrix
@@ -184,22 +188,98 @@ def test_scale_edges():
         assert np.array_equal(scaled_edges[i], sample_edges[i] * scalar)
 
 
-def test_smoothing_routine_1():
+def test_immediate_neighbor_linear_smoothing():
     """
     What is smoothing routine 1?
     """
-    sample_edges = [
-        np.array([[0, 0], [16, 0], [16, 16], [32, 16], [32, 32]]),
-        np.array([[128, 0], [0, 128], [128, 128]]),
-    ]
-
+    edge0 = np.array([[0, 0], [16, 0], [16, 16], [32, 16], [32, 32]])
     expected_0 = np.array([[24, 16], [8, 8], [24, 8], [24, 24], [16, 8]])
-    expected_1 = np.array([[64, 128], [128, 64], [64, 64]])
-    smoothed_edges = smoothing_routine_1(sample_edges)
-    assert len(smoothed_edges) == len(sample_edges)
 
-    assert smoothed_edges[0].shape == sample_edges[0].shape
-    print(smoothed_edges[0])
-    print(expected_0)
-    assert np.array_equal(smoothed_edges[0], expected_0)
-    assert np.array_equal(smoothed_edges[1], expected_1)
+    ans = immediate_neighbor_linear_smoothing(edge0)
+    assert len(ans) == len(edge0)
+    assert ans.shape == edge0.shape
+    assert np.array_equal(ans, expected_0)
+
+    edge1 = np.array([[128, 0], [0, 128], [128, 128]])
+    expected_1 = np.array([[64, 128], [128, 64], [64, 64]])
+    ans = immediate_neighbor_linear_smoothing(edge1)
+    assert len(ans) == len(edge1)
+    assert ans.shape == edge1.shape
+    assert np.array_equal(ans, expected_1)
+
+
+def test_drop_points_on_edges():
+    edge0 = np.array([[0, 0], [16, 0], [16, 16], [32, 16], [32, 32]])
+    ans = drop_points_on_edge(edge0)
+    expected = np.array(
+        [
+            [0, 0],
+            [16, 16],
+            [32, 32],
+        ]
+    )
+    assert np.array_equal(ans, expected)
+
+    edge0 = np.array([[0, 0], [16, 0], [16, 16], [32, 16], [32, 32], [7, 7]])
+    ans = drop_points_on_edge(edge0)
+    assert np.array_equal(ans, expected)
+
+
+def test_unit_vector():
+    a = np.array([1, 1])
+    b = np.array([2, 2])
+
+    ans = get_unit_vector(a, b)
+
+    assert np.allclose(ans, np.array([0.707, 0.707]), rtol=0.01, atol=0.01)
+
+
+def test_remove_any_duplicate_points():
+    edge0 = np.array(
+        [
+            [0, 0],
+            [16, 0],
+            [16, 16],
+            [16, 16],
+            [32, 16],
+            [32, 32],
+            [7, 7],
+            [0, 0],
+            [16, 0],
+            [16, 0],
+            [16, 0],
+            [16, 0],
+        ]
+    )
+    expected = np.array([[0, 0], [16, 0], [16, 16], [32, 16], [32, 32], [7, 7]])
+    ans = remove_any_duplicate_points(edge0)
+    assert np.array_equal(ans, expected)
+
+
+def test_remove_useless_points_on_edge():
+    edge0 = np.array(
+        [
+            [0, 0],
+            [1, 0],
+            [2, 0],
+            [3, 0],
+            [4, 0],
+            [5, 2],
+            [6, 4],
+            [4, 5],
+            [2, 6],
+            [1, 3],
+        ]
+    )
+
+    expected = np.array(
+        [
+            [0, 0],
+            [4, 0],
+            [6, 4],
+            [2, 6],
+        ]
+    )
+
+    ans = remove_useless_points_on_edge(edge0)
+    assert np.array_equal(ans, expected)

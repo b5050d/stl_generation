@@ -16,11 +16,11 @@ def tesselate(shape: np.ndarray, plot=False):
 
     indices = earcut.triangulate_float64(shape, rings)
 
-    print(f"Shape: {shape}")
-    print(f"Indices: {indices}")
-    print(f"Rings: {rings}")
-
     if plot:
+        print(f"Shape: {shape}")
+        print(f"Indices: {indices}")
+        print(f"Rings: {rings}")
+
         # Plotting the result
         for i in range(0, len(indices), 3):
             triangle = shape[indices[i : i + 3]]
@@ -31,6 +31,63 @@ def tesselate(shape: np.ndarray, plot=False):
 
 
 if __name__ == "__main__":
-    # Test the function with a sample shape
-    sample_shape = np.array([[0, 0], [1, 0], [1, 1], [0, 1]])
-    tesselate(sample_shape)
+    # # Test the function with a sample shape
+    # sample_shape = np.array([[0, 0], [1, 0], [1, 1], [0, 1]])
+    # tesselate(sample_shape)
+
+    inner_edge = np.array([[4, 3], [5, 4], [4, 5], [3, 4]])
+    outer_edge = np.array([[3, 1], [5, 1], [7, 4], [5, 7], [3, 7], [1, 4]])
+
+    combined_edge = np.array(
+        [
+            [3, 1],
+            [5, 1],
+            [7, 4],
+            [5, 4],
+            [4, 3],
+            [3, 4],
+            [4, 5],
+            [5, 4],
+            [7, 4],
+            [5, 7],
+            [3, 7],
+            [1, 4],
+        ]
+    )
+
+    indices = np.array(
+        [
+            11,
+            0,
+            1,
+            1,
+            2,
+            3,
+            6,
+            7,
+            8,
+            8,
+            9,
+            10,
+            1,
+            3,
+            4,
+            6,
+            8,
+            10,
+            11,
+            1,
+            4,
+            5,
+            6,
+            10,
+            11,
+            4,
+            5,
+            5,
+            10,
+            11,
+        ]
+    )
+
+    ans = tesselate(combined_edge, plot=True)
