@@ -8,7 +8,7 @@ import numpy as np
 # )
 
 
-def generate_stl_walls(edge, floor_height, ceiling_height):
+def generate_stl_walls(edge, floor_height, ceiling_height, inner_or_outer="inner"):
     """
     Generate the walls of the STL from the edges.
     """
@@ -38,6 +38,42 @@ def generate_stl_walls(edge, floor_height, ceiling_height):
                 # now we add in the normal vector
             ]
         )
+
+        new_triangles = np.array([t1, t2])
+
+        if first_loop:
+            triangles = new_triangles
+            first_loop = False
+        else:
+            triangles = np.concatenate((triangles, new_triangles), axis=0)
+
+    return triangles
+
+
+def generate_sloped_walls(outer_shape, inner_shape, lower_height, upper_height):
+    """
+    Note, for now this is assuming that the slope is upward in the z dir
+    the outer shape is the base (lower)
+    and the inner shape is the top (upper)
+    """
+    assert len(outer_shape) == len(inner_shape)
+    outer_shape = ensure_ccw(outer_shape)
+    inner_shape = ensure_ccw(inner_shape)
+
+    first_loop = True
+    for i in range(len(outer_shape)):
+        a = outer_shape[i]
+        b = outer_shape[(i + 1) % len(outer_shape)]
+        c = inner_shape[i]
+        d = inner_shape[(i + 1) % len(inner_shape)]
+
+        A = np.array([a[0], a[1], lower_height])
+        B = np.array([b[0], b[1], lower_height])
+        C = np.array([c[0], c[1], upper_height])
+        D = np.array([d[0], d[1], upper_height])
+
+        t1 = np.array([A, B, C, compute_3d_norm(A, B, C)])
+        t2 = np.array([B, D, C, compute_3d_norm(B, D, C)])
 
         new_triangles = np.array([t1, t2])
 

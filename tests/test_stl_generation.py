@@ -4,8 +4,10 @@ from stl_generation.stl_generation import (
     is_ccw,
     generate_triangles_from_tesselation,
     # generate_triangles_for_slope,
+    generate_sloped_walls,
     compute_3d_norm,
 )
+
 
 import numpy as np
 
@@ -120,6 +122,36 @@ def test_compute_3d_norm():
     assert np.array_equal(
         normal, [0, 0, 1]
     ), "The normal should be [0, 0, 1] for the given triangle"
+
+
+def test_generate_sloped_walls():
+    outer_shape = np.array(
+        [
+            [0, 0],
+            [3, 0],
+            [3, 3],
+            [0, 3],
+        ]
+    )
+    inner_shape = np.array(
+        [
+            [1, 1],
+            [2, 1],
+            [2, 2],
+            [1, 2],
+        ]
+    )
+
+    lower_height = 0
+    upper_height = 3
+
+    ans = generate_sloped_walls(outer_shape, inner_shape, lower_height, upper_height)
+
+    assert len(ans) == 8
+    assert ans.shape == (8, 4, 3)
+    for t in ans:
+        for p in t[:-1]:
+            assert p[2] in [0, 3]
 
 
 # def test_generate_triangles_for_slope():

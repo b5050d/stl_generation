@@ -272,6 +272,24 @@ def create_single_edge_from_shape_in_shape(edge1, edge2):
     return new_list
 
 
+def gen_circle(center_point, radius, num_points):
+    """
+    Generate a list of 2D points representing a circle.
+
+    Parameters:
+        center_point (tuple or array-like): (x, y) center of the circle.
+        radius (float): Radius of the circle.
+        num_points (int): Number of points to generate.
+
+    Returns:
+        numpy.ndarray: Array of shape (num_points, 2), each row a 2D point on the circle.
+    """
+    angles = np.linspace(0, 2 * np.pi, num_points, endpoint=False)
+    x = center_point[0] + radius * np.cos(angles)
+    y = center_point[1] + radius * np.sin(angles)
+    return np.stack((x, y), axis=-1)
+
+
 if __name__ == "__main__":
     inner_edge = np.array([[4, 3], [5, 4], [4, 5], [3, 4]])
     outer_edge = np.array([[3, 1], [5, 1], [7, 4], [5, 7], [3, 7], [1, 4]])
