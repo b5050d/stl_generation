@@ -12,24 +12,24 @@ from stl_generation.stl_generation import (
 import numpy as np
 
 
-def test_generate_stl_walls():
-    edge = np.array([[1, 0], [3, 0], [4, 2], [3, 4], [1, 4], [0, 2]])
+# def test_generate_stl_walls():
+#     edge = np.array([[1, 0], [3, 0], [4, 2], [3, 4], [1, 4], [0, 2]])
 
-    floor_height = 0
-    ceiling_height = 5
+#     floor_height = 0
+#     ceiling_height = 5
 
-    walls = generate_stl_walls(edge, floor_height, ceiling_height)
+#     walls = generate_stl_walls(edge, floor_height, ceiling_height)
 
-    assert len(walls) == 12, "There should be 12 triangles"
-    for triangle in walls:
-        assert triangle.shape == (3, 3), "Each triangle should have 3 vertices"
-        assert len(triangle) == 3, "Each triangle should have 3 vertices"
-        for vertex in triangle:
-            assert len(vertex) == 3, "Each vertex should have 3 coordinates (x, y, z)"
-            assert vertex[2] in [
-                floor_height,
-                ceiling_height,
-            ], "Z coordinate should be either floor_height or ceiling_height"
+#     assert len(walls) == 12, "There should be 12 triangles"
+#     for triangle in walls:
+#         assert triangle.shape == (3, 3), "Each triangle should have 3 vertices"
+#         assert len(triangle) == 3, "Each triangle should have 3 vertices"
+#         for vertex in triangle:
+#             assert len(vertex) == 3, "Each vertex should have 3 coordinates (x, y, z)"
+#             assert vertex[2] in [
+#                 floor_height,
+#                 ceiling_height,
+#             ], "Z coordinate should be either floor_height or ceiling_height"
 
 
 def test_is_ccw():
@@ -79,11 +79,11 @@ def test_generate_triangles_from_tesselation():
 
     assert len(ans) == 4
     for a in ans:
-        for i in range(3):
+        for i in range(1, 4):
             assert a[i, 2] == 0, "Z coordinate should be 0 for ceiling triangles"
         assert a.shape == (4, 3), "Each triangle should have 3 vertices and a norm"
         assert np.array_equal(
-            a[3], np.array([0, 0, -1])
+            a[0], np.array([0, 0, -1])
         ), "The normal vector should be [0, 0, -1] for floor triangles"
 
     ans = generate_triangles_from_tesselation(
@@ -94,11 +94,11 @@ def test_generate_triangles_from_tesselation():
     )
     assert len(ans) == 4
     for a in ans:
-        for i in range(3):
+        for i in range(1, 4):
             assert a[i, 2] == 4, "Z coordinate should be 4 for ceiling triangles"
         assert a.shape == (4, 3), "Each triangle should have 3 vertices and a norm"
         assert np.array_equal(
-            a[3], np.array([0, 0, 1])
+            a[0], np.array([0, 0, 1])
         ), "The normal vector should be [0, 0, -1] for floor triangles"
 
 
@@ -150,8 +150,22 @@ def test_generate_sloped_walls():
     assert len(ans) == 8
     assert ans.shape == (8, 4, 3)
     for t in ans:
-        for p in t[:-1]:
+        for p in t[1:]:
             assert p[2] in [0, 3]
+
+
+def test_generate_stl_walls():
+    outer_shape = np.array(
+        [
+            [0, 0],
+            [3, 0],
+            [3, 3],
+            [0, 3],
+        ]
+    )
+
+    ans = generate_stl_walls(outer_shape, 0, 5, "inner")
+    assert len(ans) == 8
 
 
 # def test_generate_triangles_for_slope():

@@ -4,7 +4,7 @@ from stl_generation.png_to_matrix import (
     pad_matrix,
 )
 from stl_generation.utils.plotting import (
-    # plot_image_matrix,
+    plot_image_matrix,
     # plot_edge_array,
     plot_stl_triangles,
 )
@@ -29,7 +29,10 @@ from stl_generation.stl_generation import (
     # generate_triangles_for_slope,
     generate_stl_walls,
     generate_sloped_walls,
+    write_triangles_to_stl,
     ensure_ccw,
+    # convert_float_to_ieee754_bin,
+    # split_4_bytes_into_4_uint8s,
 )
 
 # from stl_generation.utils.plotting import plot_stl_triangles
@@ -88,7 +91,8 @@ if __name__ == "__main__":
     # plot_stl_triangles(ans)
 
     png_path = "images/dot.png"
-    png_path = "images/star.png"
+    png_path = "images/star2.png"
+    png_path = "images/triskellion.png"
     matrix = load_png_to_gray_matrix(png_path)
     matrix = pad_matrix(matrix, 0.1)
 
@@ -116,13 +120,13 @@ if __name__ == "__main__":
     # kernel = np.ones((3, 3), np.uint8)
     # dilated_img = cv2.dilate(binary_img, kernel, iterations=1)
 
-    intermediate_kernel = np.ones((10, 10), np.uint8)
+    intermediate_kernel = np.ones((6, 6), np.uint8)
     intermediate_shape = cv2.dilate(original_shape, intermediate_kernel, iterations=1)
 
     extreme_kernel = np.ones((40, 40), np.uint8)
     extreme_shape = cv2.dilate(intermediate_shape, extreme_kernel, iterations=1)
 
-    # plot_image_matrix(intermediate_shape)
+    plot_image_matrix(intermediate_shape)
     # plot_image_matrix(extreme_shape)
 
     def get_outer_contour_as_edge(shape: np.ndarray):
@@ -203,19 +207,20 @@ if __name__ == "__main__":
     base_shape = generate_triangles_from_tesselation(
         base_tesselation, base_edge, "floor", 0
     )
-    # plot_stl_triangles(base_shape)
+    # plot_stl_triangles(base_shape, False)
 
     ############################################################
     # GET SHAPE 2: Outerslope (big circ to lil circ)
     ############################################################
     slope_shape = generate_sloped_walls(big_circ, lil_circ, 0, 5)
-    # plot_stl_triangles(slope_shape)
+    # plot_stl_triangles(slope_shape, False)
 
     ############################################################
     # GET SHAPE 3: Inner walls (Original shape)
     ############################################################
-    inner_walls_shape = generate_stl_walls(original_edge, 0, 8)
-    # plot_stl_triangles(inner_walls_shape)
+    inner_walls_shape = generate_stl_walls(original_edge, 0, 10)
+
+    # plot_stl_triangles(inner_walls_shape, True)
 
     ############################################################
     # GET SHAPE 4: Falt surface (Dilated Cut + lil circ)
@@ -225,13 +230,13 @@ if __name__ == "__main__":
     face_shape = generate_triangles_from_tesselation(
         face_tesselation, face_edge, "ceiling", 5
     )
-    # plot_stl_triangles(face_shape)
+    # plot_stl_triangles(face_shape, False)
 
     ############################################################
     # GET SHAPE 5: Outer walls of cutting element
     ############################################################
-    outer_walls_shape = generate_stl_walls(intermediate_edge, 5, 8)
-    # plot_stl_triangles(outer_walls_shape)
+    outer_walls_shape = generate_stl_walls(intermediate_edge, 5, 10)
+    # plot_stl_triangles(outer_walls_shape, False)
 
     ############################################################
     # GET SHAPE 6: Top surface of cutting element
@@ -239,121 +244,153 @@ if __name__ == "__main__":
     top_edge = create_single_edge_from_shape_in_shape(intermediate_edge, original_edge)
     top_tesselation = tesselate(top_edge, False)
     top_shape = generate_triangles_from_tesselation(
-        top_tesselation, top_edge, "ceiling", 8
+        top_tesselation, top_edge, "ceiling", 10
     )
-    plot_stl_triangles(top_shape)
+    # plot_stl_triangles(top_shape, True)
 
-    # plot_edge_array(extreme_edge,True)
+    ############################################################
+    # Alright so now we need to make our STL file
+    ############################################################
+    # collect all the triangles
+    collected_triangles = base_shape.copy()
+    collected_triangles = np.concatenate(
+        (
+            base_shape,
+            slope_shape,
+            inner_walls_shape,
+            face_shape,
+            outer_walls_shape,
+            top_shape,
+        ),
+        axis=0,
+    )
+    assert len(collected_triangles) == len(base_shape) + len(slope_shape) + len(
+        inner_walls_shape
+    ) + len(face_shape) + len(outer_walls_shape) + len(top_shape)
+    print(collected_triangles.shape)
 
-    # # ans = smoothing_routine_1(ans)
-    # # input(ans)
-    # # ans = drop_points_on_edges(ans)
-    # # input(ans)
+    collected_triangles = collected_triangles * 0.5
 
-    # # ans = remove_useless_points_on_edges(ans)
-    # # input(ans[0])
-    # # plot_edge_array(ans[0], True)
+    plot_stl_triangles(collected_triangles, True)
 
-    # # import sys
+    filepath = "sample.stl"
+    write_triangles_to_stl(filepath, collected_triangles)
 
-    # # sys.exit(1)
-    # # input("kill")
 
-    # # def simple_edge_filtering(edges):
-    # #     edges = scale_edges(edges, 256)
+#    new_list = np.concatenate((new_list, closest_points), axis=0)
 
-    # #     edges = smoothing_routine_1(edges)
-    # #     edges = drop_points_on_edges(edges, 2)
-    # #     edges = smoothing_routine_1(edges)
-    # #     edges = drop_points_on_edges(edges, 2)
 
-    # #     edges = remove_useless_points_on_edges(edges, 2)
+# plot_edge_array(extreme_edge,True)
 
-    # #     return edges
+# # ans = smoothing_routine_1(ans)
+# # input(ans)
+# # ans = drop_points_on_edges(ans)
+# # input(ans)
 
-    # edges = [original_edge, intermediate_edge, extreme_edge]
-    # # edges = simple_edge_filtering(edges)
+# # ans = remove_useless_points_on_edges(ans)
+# # input(ans[0])
+# # plot_edge_array(ans[0], True)
 
-    # # for e in edges:
-    # #     plot_edge_array(e, False)
-    # # plt.show()
+# # import sys
 
-    # # input("kill")
+# # sys.exit(1)
+# # input("kill")
 
-    # # combined_edge_cutting = create_single_edge_from_shape_in_shape(edges[0], edges[1])
-    # # combined_edge_holding = create_single_edge_from_shape_in_shape(edges[0], edges[2])
-    # # combined_edge_slope = create_single_edge_from_shape_in_shape(edges[1], edges[2])
+# # def simple_edge_filtering(edges):
+# #     edges = scale_edges(edges, 256)
 
-    # # plot_edge_array(combined_edge_cutting, True)
-    # # plot_edge_array(combined_edge_holding, False)
-    # # plot_edge_array(combined_edge_slope, False)
-    # # plt.show()
+# #     edges = smoothing_routine_1(edges)
+# #     edges = drop_points_on_edges(edges, 2)
+# #     edges = smoothing_routine_1(edges)
+# #     edges = drop_points_on_edges(edges, 2)
 
-    # # Alright now we need to do something special for the slope
+# #     edges = remove_useless_points_on_edges(edges, 2)
 
-    # # Compute the centroid
-    # centroid = np.mean(edges[1], axis=0)
+# #     return edges
 
-    # print("Centroid:", centroid)
+# edges = [original_edge, intermediate_edge, extreme_edge]
+# # edges = simple_edge_filtering(edges)
 
-    # # find the furthest point from the centroid
-    # distances = np.linalg.norm(edges[1] - centroid, axis=1)
-    # furthest_index = np.argmax(distances)
-    # furthest_point = edges[1][furthest_index]
-    # print("Furthest point:", furthest_point)
+# # for e in edges:
+# #     plot_edge_array(e, False)
+# # plt.show()
 
-    # radius = np.linalg.norm(furthest_point - centroid)
-    # print("Radius:", radius)
+# # input("kill")
 
-    # def gen_circle(center_point, radius, num_points):
-    #     """
-    #     Generate a list of 2D points representing a circle.
+# # combined_edge_cutting = create_single_edge_from_shape_in_shape(edges[0], edges[1])
+# # combined_edge_holding = create_single_edge_from_shape_in_shape(edges[0], edges[2])
+# # combined_edge_slope = create_single_edge_from_shape_in_shape(edges[1], edges[2])
 
-    #     Parameters:
-    #         center_point (tuple or array-like): (x, y) center of the circle.
-    #         radius (float): Radius of the circle.
-    #         num_points (int): Number of points to generate.
+# # plot_edge_array(combined_edge_cutting, True)
+# # plot_edge_array(combined_edge_holding, False)
+# # plot_edge_array(combined_edge_slope, False)
+# # plt.show()
 
-    #     Returns:
-    #         numpy.ndarray: Array of shape (num_points, 2), each row a 2D point on the circle.
-    #     """
-    #     angles = np.linspace(0, 2 * np.pi, num_points, endpoint=False)
-    #     x = center_point[0] + radius * np.cos(angles)
-    #     y = center_point[1] + radius * np.sin(angles)
-    #     return np.stack((x, y), axis=-1)
+# # Alright now we need to do something special for the slope
 
-    # numpoints = 32
-    # circ = gen_circle(centroid, int(radius * 1.2), 32)
-    # circ = ensure_ccw(circ)  # Ensure the circle is counter-clockwise
-    # assert len(circ) == numpoints, "Expected 64 points in the circle"
-    # plot_edge_array(circ, False)
-    # plot_edge_array(edges[0], False)  # Plot the original edge
-    # plt.plot(centroid[0], centroid[1], "bo")  # Plot the centroid
-    # plt.plot(furthest_point[0], furthest_point[1], "go")  # Plot the furthest point
-    # plot_edge_array(edges[1], True)
+# # Compute the centroid
+# centroid = np.mean(edges[1], axis=0)
 
-    # comb_edge = create_single_edge_from_shape_in_shape(
-    #     ensure_ccw(edges[1]), ensure_ccw(circ)
-    # )
-    # plot_edge_array(comb_edge, True)
-    # plt.show()
+# print("Centroid:", centroid)
 
-    # tes = tesselate(comb_edge, True)
+# # find the furthest point from the centroid
+# distances = np.linalg.norm(edges[1] - centroid, axis=1)
+# furthest_index = np.argmax(distances)
+# furthest_point = edges[1][furthest_index]
+# print("Furthest point:", furthest_point)
 
-    # # Now
+# radius = np.linalg.norm(furthest_point - centroid)
+# print("Radius:", radius)
 
-    # # now I need a list of pooints that form a circle. Should be 20
+# def gen_circle(center_point, radius, num_points):
+#     """
+#     Generate a list of 2D points representing a circle.
 
-    # # tesselate_slope = tesselate(combined_edge_cutting, True)
-    # # tesselate_slope = tesselate(combined_edge_slope, True)
+#     Parameters:
+#         center_point (tuple or array-like): (x, y) center of the circle.
+#         radius (float): Radius of the circle.
+#         num_points (int): Number of points to generate.
 
-    # # assert is_ccw(combined_edge_cutting), "The cutting edge should be counter-clockwise"
-    # # assert is_ccw(combined_edge_holding), "The holding edge should be counter-clockwise"
+#     Returns:
+#         numpy.ndarray: Array of shape (num_points, 2), each row a 2D point on the circle.
+#     """
+#     angles = np.linspace(0, 2 * np.pi, num_points, endpoint=False)
+#     x = center_point[0] + radius * np.cos(angles)
+#     y = center_point[1] + radius * np.sin(angles)
+#     return np.stack((x, y), axis=-1)
 
-    # # # Alright generating the walls
+# numpoints = 32
+# circ = gen_circle(centroid, int(radius * 1.2), 32)
+# circ = ensure_ccw(circ)  # Ensure the circle is counter-clockwise
+# assert len(circ) == numpoints, "Expected 64 points in the circle"
+# plot_edge_array(circ, False)
+# plot_edge_array(edges[0], False)  # Plot the original edge
+# plt.plot(centroid[0], centroid[1], "bo")  # Plot the centroid
+# plt.plot(furthest_point[0], furthest_point[1], "go")  # Plot the furthest point
+# plot_edge_array(edges[1], True)
 
-    # # plt.show()
+# comb_edge = create_single_edge_from_shape_in_shape(
+#     ensure_ccw(edges[1]), ensure_ccw(circ)
+# )
+# plot_edge_array(comb_edge, True)
+# plt.show()
 
-    # # tesselated_cutting = tesselate(combined_edge_cutting, True)
+# tes = tesselate(comb_edge, True)
 
-    # # tesselated_holding = tesselate(combined_edge_holding, True)
+# # Now
+
+# # now I need a list of pooints that form a circle. Should be 20
+
+# # tesselate_slope = tesselate(combined_edge_cutting, True)
+# # tesselate_slope = tesselate(combined_edge_slope, True)
+
+# # assert is_ccw(combined_edge_cutting), "The cutting edge should be counter-clockwise"
+# # assert is_ccw(combined_edge_holding), "The holding edge should be counter-clockwise"
+
+# # # Alright generating the walls
+
+# # plt.show()
+
+# # tesselated_cutting = tesselate(combined_edge_cutting, True)
+
+# # tesselated_holding = tesselate(combined_edge_holding, True)

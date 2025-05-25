@@ -57,14 +57,14 @@ def plot_triangles(triangles):
     plt.show()
 
 
-def plot_stl_triangles(triangles):
+def plot_stl_triangles(triangles, actually_plot=False):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection="3d")
 
     for triangle in triangles:
-        A = triangle[0]
-        B = triangle[1]
-        C = triangle[2]
+        A = triangle[1]
+        B = triangle[2]
+        C = triangle[3]
 
         ax.plot([A[0], B[0]], [A[1], B[1]], [A[2], B[2]], color="blue")
         ax.plot([B[0], C[0]], [B[1], C[1]], [B[2], C[2]], color="red")
@@ -73,4 +73,6 @@ def plot_stl_triangles(triangles):
     ax.set_xlabel("X")
     ax.set_ylabel("Y")
     ax.set_zlabel("Z")
-    plt.show()
+
+    if actually_plot:
+        plt.show()
