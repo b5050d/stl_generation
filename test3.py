@@ -1,6 +1,6 @@
 from stl_generation.png_to_matrix import (
     load_png_to_gray_matrix,
-    # convert_matrix_to_binary,
+    convert_matrix_to_binary,
     pad_matrix,
 )
 from stl_generation.utils.plotting import (
@@ -91,12 +91,14 @@ if __name__ == "__main__":
     # plot_stl_triangles(ans)
 
     png_path = "images/dot.png"
-    png_path = "images/star2.png"
-    png_path = "images/triskellion.png"
+    png_path = "images/heart.png"
+    # png_path = "images/star2.png"
+    # png_path = "images/triskellion.png"
     matrix = load_png_to_gray_matrix(png_path)
     matrix = pad_matrix(matrix, 0.1)
 
-    # plot_image_matrix(matrix)
+    convert_matrix_to_binary(matrix, 128)
+    plot_image_matrix(matrix)
 
     # invert (white should indicate the shape)
     matrix = 255 - matrix
@@ -120,13 +122,13 @@ if __name__ == "__main__":
     # kernel = np.ones((3, 3), np.uint8)
     # dilated_img = cv2.dilate(binary_img, kernel, iterations=1)
 
-    intermediate_kernel = np.ones((6, 6), np.uint8)
+    intermediate_kernel = np.ones((12, 12), np.uint8)
     intermediate_shape = cv2.dilate(original_shape, intermediate_kernel, iterations=1)
 
     extreme_kernel = np.ones((40, 40), np.uint8)
     extreme_shape = cv2.dilate(intermediate_shape, extreme_kernel, iterations=1)
 
-    plot_image_matrix(intermediate_shape)
+    # plot_image_matrix(intermediate_shape)
     # plot_image_matrix(extreme_shape)
 
     def get_outer_contour_as_edge(shape: np.ndarray):
@@ -235,7 +237,7 @@ if __name__ == "__main__":
     ############################################################
     # GET SHAPE 5: Outer walls of cutting element
     ############################################################
-    outer_walls_shape = generate_stl_walls(intermediate_edge, 5, 10)
+    outer_walls_shape = generate_stl_walls(intermediate_edge, 5, 10, "outer")
     # plot_stl_triangles(outer_walls_shape, False)
 
     ############################################################

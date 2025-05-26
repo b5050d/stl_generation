@@ -37,23 +37,42 @@ def generate_stl_walls(edge, floor_height, ceiling_height, inner_or_outer="inner
         if OUTER:
             norm = -1 * norm
 
-        t1 = np.array(
-            [
-                [norm[0], norm[1], 0],
-                [a[0], a[1], floor_height],
-                [a[0], a[1], ceiling_height],
-                [b[0], b[1], floor_height],
-            ]
-        )
+        if OUTER:
+            t1 = np.array(
+                [
+                    [norm[0], norm[1], 0],
+                    [a[0], a[1], floor_height],
+                    [b[0], b[1], floor_height],
+                    [a[0], a[1], ceiling_height],
+                ]
+            )
 
-        t2 = np.array(
-            [
-                [norm[0], norm[1], 0],
-                [b[0], b[1], floor_height],
-                [a[0], a[1], ceiling_height],
-                [b[0], b[1], ceiling_height],
-            ]
-        )
+            t2 = np.array(
+                [
+                    [norm[0], norm[1], 0],
+                    [b[0], b[1], floor_height],
+                    [b[0], b[1], ceiling_height],
+                    [a[0], a[1], ceiling_height],
+                ]
+            )
+        else:
+            t1 = np.array(
+                [
+                    [norm[0], norm[1], 0],
+                    [a[0], a[1], floor_height],
+                    [a[0], a[1], ceiling_height],
+                    [b[0], b[1], floor_height],
+                ]
+            )
+
+            t2 = np.array(
+                [
+                    [norm[0], norm[1], 0],
+                    [b[0], b[1], floor_height],
+                    [a[0], a[1], ceiling_height],
+                    [b[0], b[1], ceiling_height],
+                ]
+            )
 
         new_triangles = np.array([t1, t2])
 
