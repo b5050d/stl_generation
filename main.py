@@ -26,6 +26,7 @@ if __name__ == "__main__":
     # png_path = "images/too_big_tree.png"
     png_path = "images/maple_leaf.png"
     # png_path = "images/a_solid.png"
+    png_path = "images/maple_leaf_small.png"
 
     # Now we need to load in the image
     matrix = load_and_process_image(png_path)
@@ -43,8 +44,8 @@ if __name__ == "__main__":
     plot_edge_array(intermediate_edge, True)
 
     # Now we need to get all the trianges
-    slope_height = 6 * 256  # TODO - move 256 to a config file or something
-    cut_height = 12 * 256
+    slope_height = 6 * 3  # * 256  # TODO - move 256 to a config file or something
+    cut_height = 12 * 3  # * 256
     triangles = build_cookie_cutter_triangles(
         original_edge,
         intermediate_edge,
@@ -53,6 +54,8 @@ if __name__ == "__main__":
         slope_height,
         cut_height,
     )
+
+    triangles = triangles / 3
 
     if False:
         plot_stl_triangles(triangles, True)

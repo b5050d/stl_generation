@@ -314,7 +314,7 @@ def edge_cleaning(edge):
 
 
 def process_matrix(matrix):
-    SCALE_FACTOR = 256  # TODO - Define in a config or something
+    # SCALE_FACTOR = 256  # TODO - Define in a config or something
     original_shape = matrix.copy()
 
     # How do we know how much to blur???
@@ -330,8 +330,8 @@ def process_matrix(matrix):
     intermediate_edge = edge_cleaning(intermediate_edge)
 
     # Scale the EDGES
-    original_edge = original_edge * SCALE_FACTOR
-    intermediate_edge = intermediate_edge * SCALE_FACTOR
+    # original_edge = original_edge * SCALE_FACTOR
+    # intermediate_edge = intermediate_edge * SCALE_FACTOR
 
     # Now we can generate the circles for the shape
     centroid = np.mean(intermediate_edge, axis=0)
