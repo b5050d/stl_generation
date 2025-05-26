@@ -218,15 +218,6 @@ def generate_triangles_from_tesselation(indices, edge, floor_or_ceiling, roof_he
     return triangles
 
 
-# def generate_triangles_from_edge(edge, floor_or_ceiling, roof_height):
-#     """
-#     Generate triangles from the edge of a shape.
-#     """
-#     assert is_ccw(edge), "The edge should be counter-clockwise"
-#     indices = np.arange(len(edge))
-#     return generate_triangles_from_tesselation(indices, edge, floor_or_ceiling, roof_height)
-
-
 def compute_3d_norm(A, B, C):
     """
     Compute the 3D normal vector for a triangle defined by points A, B, C.
@@ -286,51 +277,6 @@ def write_triangles_to_stl(filepath, collected_triangles):
                     stl.write(b)
                     stl.write(a)
             stl.write(np.uint16(0))
-
-
-# def generate_triangles_for_slope(indices, edge, inner_edge, outer_edge, roof_height):
-#     """ """
-
-#     first_loop = True
-
-#     for i in range(0, len(indices), 3):
-#         indices_of_triangle = indices[i : i + 3]
-
-#         # Alright now we need to get the points from the triangle and ensure CCW
-#         triangle_points = edge[indices_of_triangle]
-
-#         # Now we need to generate the normals...
-#         zs = []
-#         for tp in triangle_points:
-#             # print(inner_edge)
-#             # input(tp)
-#             if in_equivalent_for_numpy(tp, inner_edge):
-#                 # print("found in inner_edge")
-#                 zs.append(roof_height)
-#             elif in_equivalent_for_numpy(tp, outer_edge):
-#                 # print("found in outer_edge")
-#                 zs.append(0)
-#             else:
-#                 raise ValueError("Point not found in either inner or outer edge")
-
-#         A = np.array(
-#             [triangle_points[0, 0], triangle_points[0, 1], zs[0]],
-#         )
-#         B = np.array(
-#             [triangle_points[1, 0], triangle_points[1, 1], zs[1]],
-#         )
-#         C = np.array(
-#             [triangle_points[2, 0], triangle_points[2, 1], zs[2]],
-#         )
-#         new_triangle = np.array([A, B, C, compute_3d_norm(A, B, C)])
-
-#         if first_loop:
-#             triangles = np.array([new_triangle])
-#             first_loop = False
-#         else:
-#             triangles = np.concatenate((triangles, [new_triangle]), axis=0)
-
-#     return triangles
 
 
 if __name__ == "__main__":

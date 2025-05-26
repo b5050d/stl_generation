@@ -290,6 +290,66 @@ def gen_circle(center_point, radius, num_points):
     return np.stack((x, y), axis=-1)
 
 
+def get_outer_contour_as_edge(shape: np.ndarray):
+    """
+    Returns the outer contour of a shape as an edge
+    """
+    contours, _ = cv2.findContours(
+        shape,
+        cv2.RETR_EXTERNAL,
+        cv2.CHAIN_APPROX_NONE,
+    )
+    if contours:
+        return contours[0].reshape(-1, 2)
+    return np.array([])
+
+
+def edge_cleaning(edge):
+    edge = drop_points_on_edge(edge)
+    for i in range(1):
+        edge = immediate_neighbor_linear_smoothing(edge)
+    edge = drop_points_on_edge(edge)
+    edge = remove_useless_points_on_edge(edge)
+    return edge
+
+
+def process_matrix(matrix):
+    SCALE_FACTOR = 256  # TODO - Define in a config or something
+    original_shape = matrix.copy()
+
+    # How do we know how much to blur???
+    # if we lock at 300 300, then 12 equates to a blur
+    # of 6, meaning we get about 2 mm of blur, which is good
+    intermediate_kernel = np.ones((12, 12), np.uint8)
+    intermediate_shape = cv2.dilate(original_shape, intermediate_kernel, iterations=1)
+
+    original_edge = get_outer_contour_as_edge(original_shape)
+    intermediate_edge = get_outer_contour_as_edge(intermediate_shape)
+
+    original_edge = edge_cleaning(original_edge)
+    intermediate_edge = edge_cleaning(intermediate_edge)
+
+    # Scale the EDGES
+    original_edge = original_edge * SCALE_FACTOR
+    intermediate_edge = intermediate_edge * SCALE_FACTOR
+
+    # Now we can generate the circles for the shape
+    centroid = np.mean(intermediate_edge, axis=0)
+
+    distances = np.linalg.norm(intermediate_edge - centroid, axis=1)
+    furthest_index = np.argmax(distances)
+    furthest_point = intermediate_edge[furthest_index]
+    print("Furthest point:", furthest_point)
+
+    radius = np.linalg.norm(furthest_point - centroid)
+    print("Radius:", radius)
+    numpoints = 32
+    big_circ = gen_circle(centroid, int(radius * 1.2), 32)
+    lil_circ = gen_circle(centroid, int(radius * 1.05), 32)
+    assert len(big_circ) == numpoints, "Expected 64 points in the circle"
+    return original_edge, intermediate_edge, big_circ, lil_circ
+
+
 if __name__ == "__main__":
     inner_edge = np.array([[4, 3], [5, 4], [4, 5], [3, 4]])
     outer_edge = np.array([[3, 1], [5, 1], [7, 4], [5, 7], [3, 7], [1, 4]])

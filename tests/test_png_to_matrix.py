@@ -7,6 +7,7 @@ from stl_generation.png_to_matrix import (
     load_png_to_gray_matrix,
     convert_matrix_to_binary,
     pad_matrix,
+    pad_to_360,
 )
 
 
@@ -29,7 +30,8 @@ def test_load_png_to_matrix_success():
         assert isinstance(matrix, np.ndarray), "Result should be a numpy array"
 
         # Check matrix dimensions
-        assert matrix.shape == (100, 100), "Matrix should match test image dimensions"
+        # TODO specify the file size in a config somewhere
+        assert matrix.shape == (300, 300), "Matrix should match specified dimensions"
 
         # Check matrix is grayscale (2D)
         assert len(matrix.shape) == 2, "Matrix should be 2D (grayscale)"
@@ -62,8 +64,10 @@ def test_convert_matrix_to_binary():
     # Test handling of invalid image path
     ans = convert_matrix_to_binary(np.array([[0, 50, 100], [150, 200, 255]]), 101)
     assert ans.shape == (2, 3), "Matrix should match test image dimensions"
-    assert ans.min() == 0 and ans.max() == 1, "Matrix should be binary"
-    assert (ans == np.array([[0, 0, 0], [1, 1, 1]])).all(), "Matrix should be binary"
+    assert ans.min() == 0 and ans.max() == 255, "Matrix should be binary"
+    assert (
+        ans == np.array([[0, 0, 0], [255, 255, 255]])
+    ).all(), "Matrix should be binary"
 
 
 def test_pad_image_matrix():
@@ -83,3 +87,11 @@ def test_pad_image_matrix():
     ).all(), "Matrix should match test image dimensions"
     assert padded_array[0, 0] == 255
     assert padded_array[139, 139] == 255
+
+
+def test_pad_to_360():
+    starting_array = np.ones((100, 100), dtype=int)
+    padded_array = pad_to_360(starting_array)
+    assert padded_array.shape == (360, 360)
+    assert padded_array[0, 0] == 255
+    assert padded_array[359, 359] == 255
