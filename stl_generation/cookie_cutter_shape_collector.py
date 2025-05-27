@@ -14,6 +14,8 @@ from stl_generation.stl_generation import (
 
 import numpy as np
 
+# from stl_generation.utils.plotting import plot_stl_triangles
+
 
 def build_cookie_cutter_triangles(
     original_edge,
@@ -50,7 +52,7 @@ def build_cookie_cutter_triangles(
     ############################################################
     inner_walls_shape = generate_stl_walls(original_edge, 0, cut_height)
 
-    # plot_stl_triangles(inner_walls_shape, True)
+    # plot_stl_triangles(inner_walls_shape, False)
 
     ############################################################
     # GET SHAPE 4: Falt surface (Dilated Cut + lil circ)

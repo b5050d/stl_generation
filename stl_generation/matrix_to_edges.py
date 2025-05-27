@@ -5,6 +5,11 @@ The purpose of these methods is to start from a binary matrix and end up with a 
 import numpy as np
 import cv2
 
+# import seaborn as sns
+# from matplotlib import pyplot as plt
+
+from stl_generation.utils.plotting import plot_image_matrix
+
 
 def check_8_neighbors(matrix: np.ndarray, i: int, j: int):
     """
@@ -91,6 +96,30 @@ def hollow_out_shapes(matrix: np.ndarray):
     # Now need to get rid of threes and 8s and such
     working_matrix = final_hollowing(count_matrix)
     return working_matrix
+
+
+def filter_sharp_edges(matrix: np.ndarray):
+    """
+    This uses a similar method to the hollowing but does not hollow
+    """
+    # needed to fix the duplicate points issue
+
+    # Basically we are taking in an array with 255 is the shape and 0 is the background
+    # we want everything that only has 1 neighbor to be romved
+    OCCUPIED = 255
+    rows, cols = matrix.shape
+    count_matrix = np.zeros((rows, cols), dtype=int)
+    for i in range(rows):
+        for j in range(cols):
+            current = matrix[i, j]
+            if current == OCCUPIED:
+                neighbors = check_8_neighbors(matrix, i, j)
+                score = neighbors.count(OCCUPIED)
+                count_matrix[i, j] = score
+
+    ans = np.where(count_matrix > 2, 255, 0)
+
+    return ans.astype(np.uint8)
 
 
 def collect_edges(matrix: np.ndarray):
@@ -309,12 +338,18 @@ def edge_cleaning(edge):
     for i in range(1):
         edge = immediate_neighbor_linear_smoothing(edge)
     edge = drop_points_on_edge(edge)
+    edge = remove_any_duplicate_points(edge)
     edge = remove_useless_points_on_edge(edge)
     return edge
 
 
 def process_matrix(matrix):
     # SCALE_FACTOR = 256  # TODO - Define in a config or something
+
+    # matrix = filter_sharp_edges(matrix) # This doesnt seem to be necessary
+
+    plot_image_matrix(matrix)
+
     original_shape = matrix.copy()
 
     # How do we know how much to blur???
@@ -351,16 +386,17 @@ def process_matrix(matrix):
 
 
 if __name__ == "__main__":
-    inner_edge = np.array([[4, 3], [5, 4], [4, 5], [3, 4]])
-    outer_edge = np.array([[3, 1], [5, 1], [7, 4], [5, 7], [3, 7], [1, 4]])
+    pass
+    # inner_edge = np.array([[4, 3], [5, 4], [4, 5], [3, 4]])
+    # outer_edge = np.array([[3, 1], [5, 1], [7, 4], [5, 7], [3, 7], [1, 4]])
 
-    combined_edge = create_single_edge_from_shape_in_shape(outer_edge, inner_edge)
+    # combined_edge = create_single_edge_from_shape_in_shape(outer_edge, inner_edge)
 
-    print(combined_edge)
+    # print(combined_edge)
 
-    combined_edge = np.array(
-        [[3, 1][5, 1][7, 4][5, 4][4, 3][3, 4][4, 5][5, 4][7, 4][5, 7][3, 7][1, 4]]
-    )
+    # combined_edge = np.array(
+    #     [[3, 1][5, 1][7, 4][5, 4][4, 3][3, 4][4, 5][5, 4][7, 4][5, 7][3, 7][1, 4]]
+    # )
 
     # sample_edges = [
     #     np.array([[0, 0], [16, 0], [16, 16], [32, 16], [32, 32]]),
