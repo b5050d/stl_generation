@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mini Paint App</title>
+  <style>
+    body { text-align: center; font-family: sans-serif; }
+    canvas { border: 1px solid #ccc; cursor: crosshair; }
+    #toolbar { margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <h2>Mini Paint App</h2>
+  <div id="toolbar">
+    <input type="color" id="colorPicker" value="#000000" />
+    <button onclick="clearCanvas()">Clear</button>
+  </div>
+  <canvas id="paintCanvas" width="300" height="300"></canvas>
+
+  <script>
+    const canvas = document.getElementById('paintCanvas');
+    const ctx = canvas.getContext('2d');
+    const colorPicker = document.getElementById('colorPicker');
+
+    let painting = false;
+
+    function startPaint(e) {
+      painting = true;
+      draw(e);
+    }
+
+    function endPaint() {
+      painting = false;
+      ctx.beginPath(); // resets path for new stroke
+    }
+
+    function draw(e) {
+      if (!painting) return;
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = colorPicker.value;
+
+      const rect = canvas.getBoundingClientRect();
+      ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+    }
+
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    canvas.addEventListener('mousedown', startPaint);
+    canvas.addEventListener('mouseup', endPaint);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseleave', endPaint);
+  </script>
+  <script>
+    // Add paste event listener to the whole window
+    window.addEventListener('paste', function (e) {
+      const items = e.clipboardData.items;
+      for (let item of items) {
+        if (item.type.indexOf('image') === 0) {
+          const file = item.getAsFile();
+          const img = new Image();
+          const reader = new FileReader();
+
+          reader.onload = function (event) {
+            img.onload = function () {
+              // Draw the image at 0,0 or wherever you want
+              ctx.drawImage(img, 0, 0);
+            };
+            img.src = event.target.result;
+          };
+
+          reader.readAsDataURL(file);
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
