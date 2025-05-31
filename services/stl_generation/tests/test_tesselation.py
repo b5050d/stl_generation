@@ -5,7 +5,7 @@ Test script for the methods in tesselation.py
 # import pytest
 import numpy as np
 
-from stl_generation.tesselation import tesselate
+from stl_generation.modules.tesselation import tesselate
 
 
 def test_tesselation():

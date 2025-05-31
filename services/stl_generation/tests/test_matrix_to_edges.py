@@ -3,7 +3,7 @@
 import pytest
 import numpy as np
 
-from stl_generation.matrix_to_edges import (
+from stl_generation.modules.matrix_to_edges import (
     hollow_out_shapes,
     check_8_neighbors,
     recreate_shape_from_counts,

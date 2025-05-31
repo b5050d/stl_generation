@@ -26,7 +26,6 @@ def create():
 @app.route("/upload_image", methods=["POST"])
 def upload_image():
     # data = request.get_json()
-
     return render_template("create.html")
 
 

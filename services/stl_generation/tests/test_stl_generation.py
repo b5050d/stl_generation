@@ -1,4 +1,4 @@
-from stl_generation.stl_generation import (
+from stl_generation.modules.stl_generation import (
     generate_stl_walls,
     compute_inward_normals,
     is_ccw,

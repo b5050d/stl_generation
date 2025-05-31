@@ -3,7 +3,7 @@ import pytest
 import numpy as np
 import cv2
 
-from stl_generation.png_to_matrix import (
+from stl_generation.modules.png_to_matrix import (
     load_png_to_gray_matrix,
     convert_matrix_to_binary,
     pad_matrix,
