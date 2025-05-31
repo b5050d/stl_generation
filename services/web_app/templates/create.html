@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Creation Page{% endblock %}
+
+{% block content %}
+<section class="flex flex-col items-center space-y-6 py-16 bg-gradient-to-r from-neutral-600 to-neutral-800">
+  <!-- Instructions (centered text) -->
+  <div id="instructions" class="max-w-md text-center text-white text-sm leading-relaxed">
+    <p>Click anywhere on this page and press <strong>Ctrl + V</strong> (or ⌘ + V) to paste an image.</p>
+    <p>It will be scaled to 300 × 300 px and converted to grayscale.</p>
+    <p>Then you can set a threshold (0–255) and click “Apply Threshold,” click “Invert” to invert colors,</p>
+    <p>click the arrow buttons to translate, or click the stretch/shrink buttons below.</p>
+    <p>New pixels (from shrinking) are filled using the mode of the border grayscale values. Stretching just scales.</p>
+  </div>
+
+  <!-- Controls (threshold/invert, translation, stretch/shrink) -->
+  <div id="controls" class="flex flex-col items-center space-y-4">
+    <!-- Threshold & Inversion Row -->
+    <div class="flex flex-wrap items-center justify-center space-x-2">
+      <label for="threshold" class="text-white text-sm">Threshold (0–255):</label>
+      <input
+        type="number"
+        id="threshold"
+        min="0"
+        max="255"
+        value="128"
+        class="w-16 px-2 py-1 rounded-md text-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+      />
+      <button
+        id="applyBtn"
+        class="px-3 py-1 bg-cyan-500 text-white rounded-md hover:bg-cyan-600 transition"
+      >Apply Threshold</button>
+      <button
+        id="invertBtn"
+        class="px-3 py-1 bg-pink-500 text-white rounded-md hover:bg-pink-600 transition"
+      >Invert</button>
+    </div>
+
+    <!-- Translation Buttons Row -->
+    <div class="flex space-x-4">
+      <button
+        id="upBtn"
+        class="px-3 py-1 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition"
+      >↑ Up</button>
+      <button
+        id="leftBtn"
+        class="px-3 py-1 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition"
+      >← Left</button>
+      <button
+        id="rightBtn"
+        class="px-3 py-1 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition"
+      >→ Right</button>
+      <button
+        id="downBtn"
+        class="px-3 py-1 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition"
+      >↓ Down</button>
+    </div>
+
+    <!-- Stretch / Shrink Buttons Row -->
+    <div class="flex flex-wrap justify-center space-x-2">
+      <button
+        id="shrinkHBtn"
+        class="px-3 py-1 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition"
+      >Shrink Horizontally</button>
+      <button
+        id="stretchHBtn"
+        class="px-3 py-1 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition"
+      >Stretch Horizontally</button>
+      <button
+        id="shrinkVBtn"
+        class="px-3 py-1 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition"
+      >Shrink Vertically</button>
+      <button
+        id="stretchVBtn"
+        class="px-3 py-1 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition"
+      >Stretch Vertically</button>
+    </div>
+  </div>
+
+  <!-- Canvas (300×300) -->
+  <canvas
+    id="pasteCanvas"
+    width="300"
+    height="300"
+    class="border border-gray-300 bg-gray-100"
+  ></canvas>
+
+  <!-- Send to Python Button -->
+  <button
+    id="sendBtn"
+    class="mt-2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition"
+  >
+    Send to Python
+  </button>
+</section>
+
+<!-- JavaScript: (unchanged functionality, just re–attached after the HTML elements above) -->
+<script>
+  
+</script>
+{% endblock %}
