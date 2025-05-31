@@ -20,3 +20,11 @@ Alright so this project has a few components
 - Triangles are listed in ascending vertical order as much as is possible
 - Triangles points are listed counter clockwise
 
+
+Functional Decomp for the webpage (just the paint editor):
+- Things can be copied into it
+- can be submitted and accepted into tthe application
+- can select and scale
+
+Nice to haves
+- Squares and circles?
