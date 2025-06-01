@@ -12,9 +12,11 @@
     <header class="bg-neutral-950 text-white shadow-md">
         <div class="container mx-auto flex justify-between items-center p-4">
             <!-- Left: Title -->
+            <a href="{{ url_for('index') }}">
             <div class="text-3xl font-bold bg-gradient-to-r from-cyan-500 to-pink-500 bg-clip-text text-transparent">
                 {% block site_title %}PNG to STL{% endblock %}
             </div>
+            </a>
 
             <!-- Right: Nav Bar -->
             <nav class="space-x-4">
@@ -22,11 +24,22 @@
                 <a href="/create" class="text-pink-600 hover:underline">Create</a> 
                 <a href="/login" class="text-pink-600 hover:underline">Login</a>
                 <a href="/logout" class="text-pink-600 hover:underline">Logout</a>
-                <a href="#" class="text-pink-600 hover:underline">Signup</a>
+                <a href="/register" class="text-pink-600 hover:underline">Signup</a>
                 {% endblock %}
             </nav>
         </div>
     </header>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div>
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} text-pink-500 justify-center">
+            {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+    {% endif %}
+    {% endwith %}
 
     <!-- Main Content -->
     <main class="flex-grow">

@@ -4,14 +4,7 @@
 
 {% block content %}
 <section class="flex flex-col items-center space-y-6 py-16 bg-gradient-to-r from-neutral-600 to-neutral-800">
-  <!-- Instructions (centered text) -->
-  <div id="instructions" class="max-w-md text-center text-white text-sm leading-relaxed">
-    <p>Click anywhere on this page and press <strong>Ctrl + V</strong> (or ⌘ + V) to paste an image.</p>
-    <p>It will be scaled to 300 × 300 px and converted to grayscale.</p>
-    <p>Then you can set a threshold (0–255) and click “Apply Threshold,” click “Invert” to invert colors,</p>
-    <p>click the arrow buttons to translate, or click the stretch/shrink buttons below.</p>
-    <p>New pixels (from shrinking) are filled using the mode of the border grayscale values. Stretching just scales.</p>
-  </div>
+
 
   <!-- Controls (threshold/invert, translation, stretch/shrink) -->
   <div id="controls" class="flex flex-col items-center space-y-4">
@@ -92,6 +85,16 @@
   >
     Send to Python
   </button>
+
+  <!-- Instructions (centered text) -->
+  <div id="instructions" class="max-w-2xl text-center text-white text-sm leading-relaxed">
+    <p>Click anywhere on this page and press <strong>Ctrl + V</strong> (or ⌘ + V) to paste an image.</p>
+    <p>It will be scaled to 300 × 300 px and converted to grayscale.</p>
+    <p>Then you can set a threshold (0–255) and click “Apply Threshold,” click “Invert” to invert colors,</p>
+    <p>click the arrow buttons to translate, or click the stretch/shrink buttons below.</p>
+    <p>New pixels (from shrinking) are filled using the mode of the border grayscale values. Stretching just scales.</p>
+  </div>
+
 </section>
 
 <!-- JavaScript: (unchanged functionality, just re–attached after the HTML elements above) -->
