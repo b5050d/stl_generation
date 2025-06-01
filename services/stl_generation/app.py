@@ -4,7 +4,7 @@ Bringing everything together for something functional here
 """
 
 # Handle imports
-from stl_generation.png_to_matrix import (
+from stl_generation.modules.png_to_matrix import (
     load_and_process_image,
 )
 from stl_generation.utils.plotting import (
@@ -12,14 +12,14 @@ from stl_generation.utils.plotting import (
     # plot_edge_array,
     plot_stl_triangles,
 )
-from stl_generation.matrix_to_edges import (
+from stl_generation.modules.matrix_to_edges import (
     process_matrix,
 )
-from stl_generation.stl_generation import (
+from stl_generation.modules.stl_generation import (
     write_triangles_to_stl,
 )
 
-from stl_generation.cookie_cutter_shape_collector import build_cookie_cutter_triangles
+from stl_generation.modules.cookie_cutter_shape_collector import build_cookie_cutter_triangles
 
 if __name__ == "__main__":
     png_path = "images/dot.png"
