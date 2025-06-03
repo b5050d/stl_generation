@@ -17,14 +17,14 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 import redis
-
+from database import * # TODO - fix this to only import what I care about
 from functools import wraps
+from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
 app.secret_key = "random secret key"
 
-users = ["ben"]
-passwords = ["asdfasdf"]
+DATABASE_PATH = "sample.db"
 
 def login_required(f):
     @wraps(f)
@@ -56,18 +56,25 @@ def login():
     if request.method == "POST":
         print("Got a post request!")
         username = request.form.get("username","").strip()
-        password = request.form.get("password","").strip()
+        
+        raw_password = request.form.get("password","").strip()
+        print(f"Raw Password: {raw_password}")
+        password =  generate_password_hash(raw_password)
+        print(password)
+        
+        expected_password = query_specific_user_in_users_table(db_path=DATABASE_PATH, username=username, field="password_hash")
+        print(expected_password)
 
-        if username in users:
-            index = users.index(username)
-            if password == passwords[index]:
-                session['username'] = username
-                flash("Login Successful!", "success")
-                return redirect(url_for('create'))
-            else:
-                flash("Incorrect password.", "danger")
+        if expected_password == []:
+            flash("User not found")
+            return render_template("login_user.html")
+        
+        if check_password_hash(expected_password, raw_password):
+            session['username'] = username
+            flash("Login Successful!", "success")
+            return redirect(url_for('create'))
         else:
-            flash("Username not found."), "danger"
+            flash("Incorrect password.", "danger")
 
     return render_template("login_user.html")
 
@@ -79,9 +86,22 @@ def logout():
     flash("You have been logged out.", "info")
     return redirect(url_for("login"))
 
+
 @app.route("/register", methods = ["GET", "POST"])
 def register():
-
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        password = generate_password_hash(request.form.get("password1", "").strip())#generate_password_hash()
+        if not check_password_hash(password,  request.form.get("password2", "").strip()):
+            flash("Passwords don't match!")
+            return render_template("register_user.html")
+        else:
+            # TODO - Check that the username is a valid email
+            # Check that the user is not already present
+            add_user_to_users_table(db_path=DATABASE_PATH, username=username, password_hash=password)
+            print("Added user to the user table!")
+            flash("Successfully added user!")
+            return render_template("login_user.html")
     return render_template("register_user.html")
 
 @app.route("/create")

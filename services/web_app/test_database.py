@@ -51,10 +51,10 @@ def test_add_user_to_users_table(tmp_path):
     # Check that the user got added
     ans = query_specific_user_in_users_table(fake_path, "ben")
     assert ans == 1
-
-    add_user_to_users_table(fake_path, "ben", "ben2")
-    ans = query_specific_user_in_users_table(fake_path, "ben")
-    assert ans == 1
+    with pytest.raises(Exception):
+        add_user_to_users_table(fake_path, "ben", "ben2")
+        ans = query_specific_user_in_users_table(fake_path, "ben")
+        assert ans == 1
 
 
 def test_query_specific_user_in_users_table(tmp_path):

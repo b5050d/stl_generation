@@ -98,8 +98,9 @@ def add_user_to_users_table(db_path, username, password_hash):
     create_users_table(db_path)
     
     # Make sure the user is not already in there.
-    ans = query_specific_user_in_users_table(username)
-    if len(ans) > 0:
+    ans = query_specific_user_in_users_table(db_path, username)
+    print(ans)
+    if ans != []:
         raise Exception("Error, there is already a user of this name")
 
     with sqlite3.connect(db_path) as connection:
@@ -152,9 +153,9 @@ def edit_field_of_user(db_path = DATABASE_PATH, username = "joe", field = "total
     
 if __name__ == "__main__":
     sampledb = "sample.db"
-
-
-    add_user_to_users_table(sampledb, "ben", "oh")
+    ans = query_specific_user_in_users_table(sampledb, "ben", "password_hash")
+    print(ans)
+    # add_user_to_users_table(sampledb, "ben", "oh")
     
     # ans = get_users_table(sampledb)
     # print(ans)
