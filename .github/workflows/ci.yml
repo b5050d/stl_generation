@@ -26,15 +26,13 @@ jobs:
     # Step 3: Install dependencies
     - name: Install dependencies
       run: |
-        cd services/stl_generation
         python -m pip install --upgrade pip
-        pip install -r requirements.txt  # If you have any extra dependencies listed
+        pip install -r requirements.txt
         pip install -r requirements-dev.txt
         
     # Step 4: Install pre-commit
     - name: Install pre-commit
       run: |
-        cd services/stl_generation
         pip install pre-commit
         pre-commit install
 
@@ -42,24 +40,51 @@ jobs:
     - name: Run pre-commit hooks
       run: |
         cd services/stl_generation
-        pre-commit run --all-files
+        pre-commit run --files services/stl_generation
 
     # Step 6: Run tests with pytest
     - name: Run pytest
       run: |
         cd services/stl_generation
-        pytest  # This will run your tests using pytest
+        pytest .  
+
+
+  web_app_ci:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout the repository
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    # Step 2: Set up Python
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12'  # You can adjust this version if needed
+
+    # Step 3: Install dependencies
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+        
+    # Step 4: Install pre-commit
+    - name: Install pre-commit
+      run: |
+        pip install pre-commit
+        pre-commit install
+
+    # Step 5: Run pre-commit hooks (black, flake8, pytest)
+    - name: Run pre-commit hooks
+      run: |
+        cd services/web_app
+        pre-commit run --all-files
+
+    # Step 6: Run tests with pytest
+    - name: Run pytest
+      run: |
+        cd services/web_app
+        pytest  .
   
-  # web_app_ci:
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v2
-      
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v2
-
-  #     - name: Install dependencies
-  #       run: |
-  #         python -m pip install --upgrade pip

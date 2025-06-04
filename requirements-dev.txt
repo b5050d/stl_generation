@@ -1,0 +1,17 @@
+# Just for Dev
+pytest==8.3.5
+pre-commit==4.2.0
+mock==5.2.0
+
+# For the STL Generator
+numpy==2.2.5
+opencv-python==4.11.0.86
+matplotlib==3.10.3
+seaborn==0.13.2
+mapbox_earcut==1.0.3
+
+# For the web app
+Flask==3.1.1
+opencv-python==4.11.0.86
+matplotlib==3.10.3
+redis==6.2.0

@@ -19,7 +19,9 @@ from stl_generation.modules.stl_generation import (
     write_triangles_to_stl,
 )
 
-from stl_generation.modules.cookie_cutter_shape_collector import build_cookie_cutter_triangles
+from stl_generation.modules.cookie_cutter_shape_collector import (
+    build_cookie_cutter_triangles,
+)
 
 if __name__ == "__main__":
     png_path = "images/dot.png"
