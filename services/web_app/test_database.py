@@ -101,3 +101,18 @@ def test_edit_field_of_user(users):
     users.edit_field_of_user("ben", "password_hash", "456")
     ans = users.query_specific_user_data("ben", "password_hash")
     assert ans == "456"
+
+
+def test_delete_user(users):
+    users.delete_user("ben")
+
+    ans = users.query_specific_user_data("ben", "id")
+    assert ans == []
+
+    users.add_user("ben", "123")
+    ans = users.query_specific_user_data("ben", "id")
+    assert ans == 1
+
+    users.delete_user("ben")
+    ans = users.query_specific_user_data("ben", "id")
+    assert ans == []

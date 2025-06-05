@@ -194,6 +194,23 @@ class UsersTable:
             cursor.execute(query_string, (value, id))
             connection.commit()
 
+    def delete_user(self, username):
+        """
+        Delete a user from the table
+        """
+        id = self.query_specific_user_data(username, "id")
+        if id == []:
+            print("Warning! User is not present in the DB")
+            print("Nothing to delete")
+            return
+
+        with sqlite3.connect(self.database_path) as connection:
+            cursor = connection.cursor()
+            cursor.execute("DELETE FROM Users WHERE id = ?", (id,))
+            connection.commit()
+
+        print(f"Deleted : {username}")
+
 
 if __name__ == "__main__":
     a = UsersTable("sample3.db")
