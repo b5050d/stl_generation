@@ -1,2 +1,54 @@
 serivces:
+  custom-redis:
+    build: /services/custom_redis
+    image: custom-redis
+    networks:
+      - monitoring
+
+  custom-grafana:
+    build: /services/custom_grafana
+    image: custom-grafana
+    networks:
+      - monitoring
+
+  custom-prometheus:
+    build: /serivces/custom_prometheus
+    image: custom-prometheus
+    networks:
+      - monitoring
   
+  # cadvisor:
+  #   image: gcr.io/cadvisor/cadvisor:latest
+  #   container_name: cadvisor
+  #   ports:
+  #     - "8080:8080"
+  #   volumes:
+  #     - /:/rootfs:ro
+  #     - /var/run:/var/run:ro
+  #     - /sys:/sys:ro
+  #     - /var/lib/docker/:/var/lib/docker:ro
+  #   networks:
+  #     - monitoring
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"     # AMQP protocol (for app to connect)
+      - "15672:15672"   # Management UI (browser)
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    networks:
+      - backend
+
+  web-app:
+    build: /services/web_app
+    image: web-app
+    networks:
+      -monitoring
+
+      
+networks:
+  monitoring:
+    driver: bridge
