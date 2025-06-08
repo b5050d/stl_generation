@@ -175,7 +175,9 @@ def test_write_triangles_to_stl(tmp_path):
     to_save = str(tmp_path) + "\\test.stl"
 
     currdir = os.path.dirname(__file__)
-    with open(currdir + "\\test_hawaii_triangles.pkl", "rb") as f:
+    filepath = os.path.join(currdir, "test_hawaii_triangles.pkl")
+
+    with open(filepath, "rb") as f:
         data = pickle.load(f)
 
     write_triangles_to_stl(to_save, data)
@@ -185,26 +187,9 @@ def test_write_triangles_to_stl(tmp_path):
 
 def test_write_triangles_to_io_buffer():
     currdir = os.path.dirname(__file__)
-    with open(currdir + "\\test_hawaii_triangles.pkl", "rb") as f:
+    filepath = os.path.join(currdir, "test_hawaii_triangles.pkl")
+    with open(filepath, "rb") as f:
         data = pickle.load(f)
 
     ans = write_triangles_to_io_buffer(data)
     assert type(ans) is io.BytesIO
-
-
-# def test_generate_triangles_for_slope():
-#     indices = np.array([0, 1, 2, 2, 3, 0])
-#     edge = np.array([[1, 0], [3, 0], [4, 2], [3, 4], [1, 4], [0, 2]])
-#     inner_edge = np.array(
-#         [[1.5, 0.5], [2.5, 0.5], [3.5, 1.5], [2.5, 3.5], [1.5, 3.5], [0.5, 1.5]]
-#     )
-#     outer_edge = np.array([[0, 0], [4, 0], [4, 4], [0, 4]])
-#     roof_height = 6
-
-#     triangles = generate_triangles_for_slope(
-#         indices, edge, inner_edge, outer_edge, roof_height
-#     )
-
-#     assert len(triangles) == len(indices) // 3
-#     for triangle in triangles:
-#         assert triangle.shape == (3, 3), "Each triangle should have 3 vertices"

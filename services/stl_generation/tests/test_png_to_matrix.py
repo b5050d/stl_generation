@@ -163,7 +163,8 @@ def test_detect_edge_color():
 
 def test_load_and_process_byte_stream():
     currdir = os.path.dirname(__file__)
-    with open(currdir + "\\test_hawaii_white.bin", "rb") as f:
+    filepath = os.path.join(currdir, "test_hawaii_white.bin")
+    with open(filepath, "rb") as f:
         data = f.read()
 
     matrix = load_and_process_byte_stream(data)
@@ -172,7 +173,8 @@ def test_load_and_process_byte_stream():
     ans = detect_edge_color(matrix)
     assert ans == 0
 
-    with open(currdir + "\\test_hawaii_black.bin", "rb") as f:
+    filepath = os.path.join(currdir, "test_hawaii_black.bin")
+    with open(filepath, "rb") as f:
         data = f.read()
 
     matrix = load_and_process_byte_stream(data)
@@ -181,13 +183,15 @@ def test_load_and_process_byte_stream():
     ans = detect_edge_color(matrix)
     assert ans == 0
 
-    with open(currdir + "\\test_bad_border.bin", "rb") as f:
+    filepath = os.path.join(currdir, "test_bad_border.bin")
+    with open(filepath, "rb") as f:
         data = f.read()
 
     with pytest.raises(AssertionError):
         matrix = load_and_process_byte_stream(data)
 
-    with open(currdir + "\\test_hawaii_nonbinary.bin", "rb") as f:
+    filepath = os.path.join(currdir, "test_hawaii_nonbinary.bin")
+    with open(filepath, "rb") as f:
         data = f.read()
 
     matrix = load_and_process_byte_stream(data)
