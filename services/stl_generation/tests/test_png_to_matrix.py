@@ -8,6 +8,7 @@ from stl_generation.modules.png_to_matrix import (
     convert_matrix_to_binary,
     pad_matrix,
     pad_to_360,
+    get_edge_values
 )
 
 
@@ -95,3 +96,21 @@ def test_pad_to_360():
     assert padded_array.shape == (360, 360)
     assert padded_array[0, 0] == 255
     assert padded_array[359, 359] == 255
+
+
+def test_get_edge_values():
+    sample_matrix = np.array(
+        [
+            [10, 14, 14, 13, 12],
+            [1, 3, 5, 3, 11],
+            [2, 5, 8, 5, 10],
+            [3, 3, 5, 3, 9],
+            [4, 5, 6, 7, 8],
+        ]
+    )
+
+    ans = get_edge_values(sample_matrix)
+    assert type(ans) is list
+
+    assert np.min(ans) == 1
+    assert np.max(ans) == 14
