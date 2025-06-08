@@ -5,7 +5,6 @@ ENV PYTHONUNBUFFERED=1
 # Set the working directory in the container
 WORKDIR /app
 
-
 # Install system dependencies required by OpenCV
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -28,7 +27,6 @@ COPY database_methods.py .
 COPY frontend_link.py .
 COPY templates/ templates/
 COPY static/ static/
-
 
 # Run the application
 CMD ["python", "app.py"]

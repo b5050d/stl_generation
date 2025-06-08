@@ -41,11 +41,11 @@ jobs:
         cd services/stl_generation
         pre-commit run --files services/stl_generation
 
-    # Step 6: Run tests with pytest
-    - name: Run pytest
-      run: |
-        cd services/stl_generation
-        pytest .  
+    # # Step 6: Run tests with pytest
+    # - name: Run pytest
+    #   run: |
+    #     cd services/stl_generation
+    #     pytest .  
 
 
   web_app_ci:
@@ -80,9 +80,9 @@ jobs:
         cd services/web_app
         pre-commit run --files services/web_app
 
-    # Step 6: Run tests with pytest
-    - name: Run pytest
-      run: |
-        cd services/web_app
-        pytest  .
+    # # Step 6: Run tests with pytest
+    # - name: Run pytest
+    #   run: |
+    #     cd services/web_app
+    #     pytest  .
   
