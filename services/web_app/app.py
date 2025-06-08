@@ -2,23 +2,41 @@
 Main App Functionality.
 """
 
-# from io import BytesIO
-# from matplotlib import pyplot as plt
-# import redis
-
-from flask import Flask, render_template, request, flash, redirect, url_for, session
+from flask import (
+    Flask,
+    render_template,
+    request,
+    flash,
+    redirect,
+    url_for,
+    session,
+    send_file,
+)
 import base64
-import cv2
-import numpy as np
 from database_methods import UsersTable
 from functools import wraps
 from werkzeug.security import check_password_hash, generate_password_hash
+import os
+import time
+import io
+
+development = int(os.getenv("DEVELOPMENT", "1"))
+assert development in [
+    0,
+    1,
+], f"Error, environment variable DEVELOPMENT not loaded correctly: {development}"
 
 app = Flask(__name__)
-app.secret_key = "random secret key"
+app.secret_key = os.getenv("SECRET_KEY", "random_secret_key")
 
-DATABASE_PATH = "sample.db"
+DATABASE_PATH = os.getenv("DATABASE_PATH", "/app/sample.db")
+
 users_table = UsersTable(DATABASE_PATH)
+
+if not development:
+    from frontend_link import FrontendLink
+
+    frontend_link = FrontendLink()
 
 
 def login_required(f):
@@ -118,25 +136,31 @@ def upload_image():
     data = request.get_json()
     if data:
         print("We got data! Oh yeah boi!")
-        print(type(data))
-        print(len(data))
-        print(data.keys())
 
         base64_image_data = data["image_data"]
-
         image_bytes = base64.b64decode(base64_image_data)
 
-        # image_stream = BytesIO(image_bytes)
+        if development:
+            time.sleep(2)
 
-        nparr = np.frombuffer(image_bytes, np.uint8)
+            # Save the buffer to a file
+            with open("test.bin", "wb") as f:
+                f.write(image_bytes)
 
-        print(nparr.shape)
+        else:
+            data = frontend_link.publish_message(image_bytes)
 
-        image = cv2.imdecode(nparr, cv2.IMREAD_GRAYSCALE)
-        print(type(image))
-        print(image.shape)
-        # plt.imshow(image)
-        # plt.show()
+            # 2️⃣ Wrap in a BytesIO object
+            buffer = io.BytesIO(data)
+            buffer.seek(0)
+
+            # 3️⃣ Use send_file to let the browser download it
+            return send_file(
+                buffer,
+                as_attachment=True,
+                download_name="myfile.txt",  # you can customize this
+                mimetype="text/plain",  # customize for the actual file type!
+            )
 
     return render_template("create.html")
 

@@ -4,35 +4,38 @@ Bringing everything together for something functional here
 """
 
 # Handle imports
-from stl_generation.modules.png_to_matrix import (
-    load_and_process_image,
-)
-from stl_generation.utils.plotting import (
+from modules.png_to_matrix import load_and_process_image
+from utils.plotting import (
     plot_image_matrix,
     # plot_edge_array,
     plot_stl_triangles,
 )
-from stl_generation.modules.matrix_to_edges import (
+from modules.matrix_to_edges import (
     process_matrix,
 )
-from stl_generation.modules.stl_generation import (
+from modules.stl_generation import (
     write_triangles_to_stl,
 )
 
-from stl_generation.modules.cookie_cutter_shape_collector import (
+from modules.cookie_cutter_shape_collector import (
     build_cookie_cutter_triangles,
 )
 
+import os
+import pickle
+
+
 if __name__ == "__main__":
+    currdir = os.path.dirname(__file__)
     png_path = "images/dot.png"
     # png_path = "images/too_big_tree.png"
     png_path = "images/maple_leaf.png"
     # png_path = "images/a_solid.png"
     png_path = "images/maple_leaf_small.png"
     png_path = "images/teige2.png"
-    png_path = "images/hawaii.png"
-    png_path = "images/sun_2.png"
-    png_path = "images/sun_3.png"
+    png_path = currdir + "/images/hawaii.png"
+    # png_path = "images/sun_2.png"
+    # png_path = "images/sun_3.png"
     # NOTE: In order to process the sun images, I will need to filter the shape at the start after making binary. Similar to how I was doing the hollowing
     # png_path = "images/usa.png"
     # png_path = "images/bunny.png"
@@ -74,6 +77,15 @@ if __name__ == "__main__":
 
     if False:
         plot_stl_triangles(triangles, True)
+
+    # Save the triangles for test purposes
+    print(triangles[0:4])
+    print(len(triangles))
+    print(type(triangles))
+
+    with open("data.pkl", "wb") as f:
+        pickle.dump(triangles, f)
+    input("Trianbges")
 
     # Now we can save the triangles to a stl file
     desired_path = "generated_stl/test.stl"

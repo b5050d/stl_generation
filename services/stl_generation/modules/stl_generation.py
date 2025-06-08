@@ -1,12 +1,12 @@
+"""
+STL Generation Script
+
+Useful methods regarding STL construction
+"""
+
 import numpy as np
-
-# from matplotlib import pyplot as plt
-
-# from stl_generation.utils.plotting import (
-#     plot_triangles,
-#     plot_stl_triangles,
-# )
 import struct
+import io
 
 
 def generate_stl_walls(edge, floor_height, ceiling_height, inner_or_outer="inner"):
@@ -260,6 +260,11 @@ def split_4_bytes_into_4_uint8s(binstr):
 
 
 def write_triangles_to_stl(filepath, collected_triangles):
+    """
+    Write an assembled list of triangles to an STL files
+
+    Assuming the list already follows the correct formatting
+    """
     with open(filepath, "wb") as stl:
         for i in range(80):
             stl.write(np.uint8(0))
@@ -277,6 +282,32 @@ def write_triangles_to_stl(filepath, collected_triangles):
                     stl.write(b)
                     stl.write(a)
             stl.write(np.uint16(0))
+
+
+def write_triangles_to_io_buffer(collected_triangles):
+    """
+    Write the bytes that would comprise an STL file to an IO buffer
+    """
+    stl = io.BytesIO()
+
+    for i in range(80):
+        stl.write(np.uint8(0))
+    number_of_triangles = len(collected_triangles)
+    stl.write(np.uint32(number_of_triangles))
+
+    # Now write each triangle
+    for triangle in collected_triangles:
+        for vertex in triangle:
+            for value in vertex:
+                bin_str = convert_float_to_ieee754_bin(value)
+                a, b, c, d = split_4_bytes_into_4_uint8s(bin_str)
+                stl.write(d)
+                stl.write(c)
+                stl.write(b)
+                stl.write(a)
+        stl.write(np.uint16(0))
+
+    return stl
 
 
 if __name__ == "__main__":

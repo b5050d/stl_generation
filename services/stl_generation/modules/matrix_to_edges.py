@@ -8,7 +8,7 @@ import cv2
 # import seaborn as sns
 # from matplotlib import pyplot as plt
 
-from stl_generation.utils.plotting import plot_image_matrix
+# from stl_generation.utils.plotting import plot_image_matrix
 
 
 def check_8_neighbors(matrix: np.ndarray, i: int, j: int):
@@ -348,7 +348,7 @@ def process_matrix(matrix):
 
     # matrix = filter_sharp_edges(matrix) # This doesnt seem to be necessary
 
-    plot_image_matrix(matrix)
+    # plot_image_matrix(matrix)
 
     original_shape = matrix.copy()
 

@@ -1,11 +1,11 @@
-from stl_generation.matrix_to_edges import (
+from stl_generation.modules.matrix_to_edges import (
     create_single_edge_from_shape_in_shape,
 )
-from stl_generation.tesselation import (
+from stl_generation.modules.tesselation import (
     tesselate,
 )
 
-from stl_generation.stl_generation import (
+from stl_generation.modules.stl_generation import (
     ensure_ccw,
     generate_triangles_from_tesselation,
     generate_sloped_walls,

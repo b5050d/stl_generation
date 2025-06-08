@@ -6,10 +6,13 @@ from stl_generation.modules.stl_generation import (
     # generate_triangles_for_slope,
     generate_sloped_walls,
     compute_3d_norm,
+    write_triangles_to_stl,
+    write_triangles_to_io_buffer,
 )
-
-
+import os
+import pickle
 import numpy as np
+import io
 
 
 # def test_generate_stl_walls():
@@ -166,6 +169,27 @@ def test_generate_stl_walls():
 
     ans = generate_stl_walls(outer_shape, 0, 5, "inner")
     assert len(ans) == 8
+
+
+def test_write_triangles_to_stl(tmp_path):
+    to_save = str(tmp_path) + "\\test.stl"
+
+    currdir = os.path.dirname(__file__)
+    with open(currdir + "\\test_hawaii_triangles.pkl", "rb") as f:
+        data = pickle.load(f)
+
+    write_triangles_to_stl(to_save, data)
+
+    assert os.path.exists(to_save)
+
+
+def test_write_triangles_to_io_buffer():
+    currdir = os.path.dirname(__file__)
+    with open(currdir + "\\test_hawaii_triangles.pkl", "rb") as f:
+        data = pickle.load(f)
+
+    ans = write_triangles_to_io_buffer(data)
+    assert type(ans) is io.BytesIO
 
 
 # def test_generate_triangles_for_slope():

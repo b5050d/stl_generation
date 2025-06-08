@@ -8,7 +8,9 @@ from stl_generation.modules.png_to_matrix import (
     convert_matrix_to_binary,
     pad_matrix,
     pad_to_360,
-    get_edge_values
+    get_edge_values,
+    load_and_process_byte_stream,
+    detect_edge_color,
 )
 
 
@@ -114,3 +116,82 @@ def test_get_edge_values():
 
     assert np.min(ans) == 1
     assert np.max(ans) == 14
+
+
+def test_detect_edge_color():
+    sample_matrix = np.array(
+        [
+            [0, 0, 0, 0, 0],
+            [0, 255, 255, 0, 0],
+            [0, 0, 255, 0, 0],
+            [0, 0, 255, 0, 0],
+            [0, 0, 0, 255, 0],
+            [0, 0, 0, 0, 0],
+        ]
+    )
+
+    ans = detect_edge_color(sample_matrix)
+    assert type(ans) is int
+    assert ans == 0
+
+    sample_matrix = np.array(
+        [
+            [255, 255, 255, 255, 255],
+            [255, 255, 255, 255, 255],
+            [255, 255, 255, 255, 255],
+            [255, 255, 255, 255, 255],
+            [255, 255, 255, 255, 255],
+        ]
+    )
+
+    ans = detect_edge_color(sample_matrix)
+    assert type(ans) is int
+    assert ans == 255
+
+    sample_matrix = np.array(
+        [
+            [255, 255, 255, 255, 255],
+            [0, 255, 255, 255, 255],
+            [255, 255, 255, 255, 255],
+            [255, 255, 255, 255, 255],
+            [255, 255, 255, 255, 255],
+        ]
+    )
+    with pytest.raises(AssertionError):
+        ans = detect_edge_color(sample_matrix)
+
+
+def test_load_and_process_byte_stream():
+    currdir = os.path.dirname(__file__)
+    with open(currdir + "\\test_hawaii_white.bin", "rb") as f:
+        data = f.read()
+
+    matrix = load_and_process_byte_stream(data)
+    assert type(matrix) is np.ndarray
+    assert matrix.shape == (360, 360)
+    ans = detect_edge_color(matrix)
+    assert ans == 0
+
+    with open(currdir + "\\test_hawaii_black.bin", "rb") as f:
+        data = f.read()
+
+    matrix = load_and_process_byte_stream(data)
+    assert type(matrix) is np.ndarray
+    assert matrix.shape == (360, 360)
+    ans = detect_edge_color(matrix)
+    assert ans == 0
+
+    with open(currdir + "\\test_bad_border.bin", "rb") as f:
+        data = f.read()
+
+    with pytest.raises(AssertionError):
+        matrix = load_and_process_byte_stream(data)
+
+    with open(currdir + "\\test_hawaii_nonbinary.bin", "rb") as f:
+        data = f.read()
+
+    matrix = load_and_process_byte_stream(data)
+    assert type(matrix) is np.ndarray
+    assert matrix.shape == (360, 360)
+    ans = detect_edge_color(matrix)
+    assert ans == 0
