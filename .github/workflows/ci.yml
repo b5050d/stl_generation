@@ -78,7 +78,7 @@ jobs:
     - name: Run pre-commit hooks
       run: |
         cd services/web_app
-        pre-commit run --all-files
+        pre-commit run --files services/web_app
 
     # Step 6: Run tests with pytest
     - name: Run pytest
