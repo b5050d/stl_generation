@@ -4,8 +4,14 @@ frontend via redis. The idea is that this is where
 the stl generation gets commanded.
 """
 
-import redis
+
 import os
+import sys
+
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(parent_dir)
+
+import redis
 import time
 from modules.process_byte_streams import cookie_cutter
 

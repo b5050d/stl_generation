@@ -414,13 +414,26 @@ fetch('/upload_image', {
 })
 .then(async (res) => {
     if (!res.ok) {
-    const txt = await res.text();
-    throw new Error(`Server error: ${res.status} ${txt}`);
+        const txt = await res.text();
+        throw new Error(`Server error: ${res.status} ${txt}`);
     }
-    return res.json();
+    // Get filename
+    const disposition = res.headers.get('Content-Disposition');
+    let filename = 'cookie_cutter.stl';
+    if (disposition && disposition.includes('filename=')) {
+        filename = disposition.split('filename=')[1].split(';')[0].replace(/["']/g, '');
+    }
+    return res.blob().then((blob) => ({ blob, filename }));
 })
-.then((json) => {
-    console.log('Received back from server:', json);
+.then(({ blob, filename }) => {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
 })
 .catch((err) => {
     console.error('Error sending image to Python:', err);

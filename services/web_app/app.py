@@ -135,7 +135,7 @@ def upload_image():
 
     data = request.get_json()
     if data:
-        print("We got data! Oh yeah boi!")
+        print("Received data from JS")
 
         base64_image_data = data["image_data"]
         image_bytes = base64.b64decode(base64_image_data)
@@ -148,7 +148,9 @@ def upload_image():
                 f.write(image_bytes)
 
         else:
+            print("Contacting the Backend")
             data = frontend_link.publish_message(image_bytes)
+            print("Got Response from the backend")
 
             # 2️⃣ Wrap in a BytesIO object
             buffer = io.BytesIO(data)
@@ -158,8 +160,8 @@ def upload_image():
             return send_file(
                 buffer,
                 as_attachment=True,
-                download_name="myfile.txt",  # you can customize this
-                mimetype="text/plain",  # customize for the actual file type!
+                download_name="cookie_cutter.stl",
+                mimetype="model/stl",
             )
 
     return render_template("create.html")

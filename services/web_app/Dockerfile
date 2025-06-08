@@ -23,7 +23,12 @@ RUN pip install redis && \
     pip install opencv-python
 
 # Copy the rest of the application code
-COPY . .
+COPY app.py .
+COPY database_methods.py .
+COPY frontend_link.py .
+COPY templates/ templates/
+COPY static/ static/
+
 
 # Run the application
 CMD ["python", "app.py"]

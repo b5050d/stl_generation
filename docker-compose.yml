@@ -10,6 +10,7 @@ services:
       - REDIS_QUEUE=${REDIS_QUEUE}
       - REDIS_DATA_COUNTER_KEY=${REDIS_DATA_COUNTER_KEY}
       - REDIS_RESPONSE_CHANNEL=${REDIS_RESPONSE_CHANNEL}
+      - DEVELOPMENT=0
     networks:
       - monitoring
 
