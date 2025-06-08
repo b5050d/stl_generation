@@ -335,7 +335,7 @@ def get_outer_contour_as_edge(shape: np.ndarray):
 
 def edge_cleaning(edge):
     edge = drop_points_on_edge(edge)
-    for i in range(1):
+    for i in range(3):
         edge = immediate_neighbor_linear_smoothing(edge)
     edge = drop_points_on_edge(edge)
     edge = remove_any_duplicate_points(edge)

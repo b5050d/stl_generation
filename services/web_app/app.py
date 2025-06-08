@@ -20,6 +20,21 @@ import os
 import time
 import io
 
+
+def is_password_strong(password):
+    if len(password) < 8:
+        return False
+    if not any(c.islower() for c in password):
+        return False
+    if not any(c.isupper() for c in password):
+        return False
+    if not any(c.isdigit() for c in password):
+        return False
+    if not any(c in "!@#$%^&*()-_=+[{]}\\|;:'\",<.>/?`~" for c in password):
+        return False
+    return True
+
+
 development = int(os.getenv("DEVELOPMENT", "1"))
 assert development in [
     0,
@@ -106,6 +121,19 @@ def logout():
 def register():
     if request.method == "POST":
         username = request.form.get("username", "").strip()
+
+        # Check that the username is not already in the database
+        ans = users_table.query_specific_user_data(username, "id")
+        if ans != []:
+            flash("Error: Username is already in use!")
+            return render_template("register_user.html")
+
+        if not is_password_strong(request.form.get("password1", "")):
+            flash(
+                "Error! Password Does not meet complexity requirements. Must be length >8, 1x digit, 1x special char, 1x uppercase, 1x lowercase"
+            )
+            return render_template("register_user.html")
+
         password1 = generate_password_hash(request.form.get("password1", "").strip())
         if not check_password_hash(
             password1, request.form.get("password2", "").strip()
@@ -141,11 +169,32 @@ def upload_image():
         image_bytes = base64.b64decode(base64_image_data)
 
         if development:
+            print("Detected Development Environment")
             time.sleep(2)
 
             # Save the buffer to a file
             with open("test.bin", "wb") as f:
                 f.write(image_bytes)
+
+            # increment the generationrs counter
+            print("Attempting to increment the counter for total generations")
+            generations = int(
+                users_table.query_specific_user_data(
+                    session["username"], "total_generations"
+                )
+            )
+            users_table.edit_field_of_user(
+                session["username"], "total_generations", generations + 1
+            )
+            generations_new = int(
+                users_table.query_specific_user_data(
+                    session["username"], "total_generations"
+                )
+            )
+            assert generations_new == generations + 1
+            print("should have successfully increment the total generations")
+
+            return render_template("create.html")
 
         else:
             print("Contacting the Backend")
@@ -157,6 +206,25 @@ def upload_image():
             buffer.seek(0)
 
             # 3️⃣ Use send_file to let the browser download it
+
+            # increment the generationrs counter
+            print("Attempting to increment the counter for total generations")
+            generations = int(
+                users_table.query_specific_user_data(
+                    session["username"], "total_generations"
+                )
+            )
+            users_table.edit_field_of_user(
+                session["username"], "total_generations", generations + 1
+            )
+            generations_new = int(
+                users_table.query_specific_user_data(
+                    session["username"], "total_generations"
+                )
+            )
+            assert generations_new == generations + 1
+            print("should have successfully increment the total generations")
+
             return send_file(
                 buffer,
                 as_attachment=True,
@@ -175,7 +243,24 @@ def metrics():
 @app.route("/account", methods=["GET", "POST"])
 @login_required
 def account():
-    return render_template("account.html")
+    # Get the information from the user from the database
+    username = session["username"]
+
+    total_genearations = users_table.query_specific_user_data(
+        username, "total_generations"
+    )
+    tokens_remaining = users_table.query_specific_user_data(username, "tokens")
+    date_joined = users_table.query_specific_user_data(username, "date_joined")
+
+    user_data = {}
+    user_data["username"] = ("Username", username)
+    user_data["total_generations"] = ("Total Files Generated", total_genearations)
+    user_data["tokens_remaining"] = ("Tokens Remaining", tokens_remaining)
+    user_data["date_joined"] = ("Date Joined", date_joined)
+
+    # clean the date
+
+    return render_template("account.html", user_data=user_data)
 
 
 if __name__ == "__main__":

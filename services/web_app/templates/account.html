@@ -3,19 +3,25 @@
 {% block title %}Account Page{% endblock %}
 
 {% block content %}
-
-
-<div>
-    <p>
-        This will be the accounts Page
-
-        This page should show the following:
-            - Username
-            - Change password option
-            - Amount of tokens left
-            - Amount of generated file
-
-    </p>
-</div>
-
+<section class="flex items-center justify-center py-16 bg-gradient-to-r from-neutral-600 to-neutral-800">
+    <div class="bg-neutral-500 rounded-lg shadow-lg p-8 w-full max-w-md">
+        <h2 class="text-2xl font-bold text-center text-cyan-500 mb-6">Account Information</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-neutral-700">
+                <tbody class="divide-y divide-neutral-700">
+                    {% for key in user_data.keys() %}
+                    <tr class="hover:bg-neutral-600">
+                        <th class="px-4 py-2 text-left font-semibold text-pink-400 w-1/2">
+                            {{ user_data[key][0] }}
+                        </th>
+                        <td class="px-4 py-2 text-left text-white w-1/2">
+                            {{ user_data[key][1] }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
 {% endblock %}
