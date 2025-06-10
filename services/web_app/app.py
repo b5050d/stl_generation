@@ -41,7 +41,7 @@ assert development in [
     1,
 ], f"Error, environment variable DEVELOPMENT not loaded correctly: {development}"
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.secret_key = os.getenv("SECRET_KEY", "random_secret_key")
 
 DATABASE_PATH = os.getenv("DATABASE_PATH", "/app/sample.db")

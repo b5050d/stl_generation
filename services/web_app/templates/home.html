@@ -17,13 +17,13 @@ eaf stencil
     <h2 class="text-2xl font-bold text-center mb-8">See It in Action:</h2>
     <div class="flex flex-col items-center gap-6">
       <div>
-        <img src="/static/hawaii.png" alt="Screenshot 3" class="rounded-lg shadow-md">
+        <img src="{{ url_for('static', filename='hawaii.png') }}" alt="Screenshot 1" class="rounded-lg shadow-md">
       </div>
       <div>
-        <img src="/static/w.png" alt="Screenshot 3" class="rounded-lg shadow-md">
+        <img src="{{ url_for('static', filename='w.png') }}" alt="Screenshot 2" class="rounded-lg shadow-md">
       </div>
       <div>
-        <img src="/static/tree.png" alt="Screenshot 3" class="rounded-lg shadow-md">
+        <img src="{{ url_for('static', filename='tree.png') }}" alt="Screenshot 3" class="rounded-lg shadow-md">
       </div>
     </div>
 </section>
