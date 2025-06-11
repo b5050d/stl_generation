@@ -20,8 +20,19 @@ import os
 import time
 import io
 
+TELEM_ATTEMPT_GEN = "telem:1"
+TELEM_SUCCESS_GEN = "telem:2"
+TELEM_FAILURE_GEN = "telem:3"
+
+TELEM_SIGNUPS = "telem:4"
+TELEM_LOGINS = "telem:5"
+TELEM_LOGOUTS = "telem:6"
+
 
 def is_password_strong(password):
+    """
+    Check if the password is strong enough
+    """
     if len(password) < 8:
         return False
     if not any(c.islower() for c in password):
@@ -48,11 +59,14 @@ DATABASE_PATH = os.getenv("DATABASE_PATH", "/app/sample.db")
 
 users_table = UsersTable(DATABASE_PATH)
 
+
+
 if not development:
     from frontend_link import FrontendLink
-
     frontend_link = FrontendLink()
-
+elif development:
+    import mock
+    frontend_link = mock.MagicMock()
 
 def login_required(f):
     @wraps(f)
@@ -102,6 +116,7 @@ def login():
             print("Correct Password!!!")
             session["username"] = username
             flash("Login Successful!", "success")
+            frontend_link.redis.incr(TELEM_LOGINS)
             return redirect(url_for("create"))
         else:
             flash("Incorrect password.", "danger")
@@ -114,6 +129,7 @@ def login():
 def logout():
     session.pop("username", None)
     flash("You have been logged out.", "info")
+    frontend_link.redis.incr(TELEM_LOGOUTS)
     return redirect(url_for("login"))
 
 
@@ -164,7 +180,7 @@ def upload_image():
     data = request.get_json()
     if data:
         print("Received data from JS")
-
+        frontend_link.redis.incr(TELEM_ATTEMPT_GEN)
         base64_image_data = data["image_data"]
         image_bytes = base64.b64decode(base64_image_data)
 
@@ -233,11 +249,6 @@ def upload_image():
             )
 
     return render_template("create.html")
-
-
-@app.route("/metrics", methods=["GET"])
-def metrics():
-    pass
 
 
 @app.route("/account", methods=["GET", "POST"])
