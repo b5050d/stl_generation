@@ -20,7 +20,7 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          ssh -o StrictHostKeyChecking=no user@${{ secrets.DEPLOY_IP }} "
+          ssh -o StrictHostKeyChecking=no b5050d@${{ secrets.DEPLOY_IP }} "
             cd /home/b5050d/stl_generation &&
             git pull &&
             docker-compose up -d --build
