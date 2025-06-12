@@ -52,7 +52,7 @@ assert development in [
     1,
 ], f"Error, environment variable DEVELOPMENT not loaded correctly: {development}"
 
-app = Flask(__name__, static_folder='static')
+app = Flask(__name__, static_folder="static")
 app.secret_key = os.getenv("SECRET_KEY", "random_secret_key")
 
 DATABASE_PATH = os.getenv("DATABASE_PATH", "/app/sample.db")
@@ -60,13 +60,15 @@ DATABASE_PATH = os.getenv("DATABASE_PATH", "/app/sample.db")
 users_table = UsersTable(DATABASE_PATH)
 
 
-
 if not development:
     from frontend_link import FrontendLink
+
     frontend_link = FrontendLink()
 elif development:
     import mock
+
     frontend_link = mock.MagicMock()
+
 
 def login_required(f):
     @wraps(f)

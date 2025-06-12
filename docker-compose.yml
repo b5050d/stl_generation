@@ -30,7 +30,40 @@ services:
     image: custom-redis
     networks:
       - monitoring
+    volumes:
+      - redis-data:/data
+ 
+  custom-prometheus:
+    build: /services/custom_prometheus
+    image: custom-prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+
+  custom-grafana:
+    build: /services/custom_grafana
+    image: custom-grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
+    ports:
+      - "3000:3000"
+    networks:
+      - monitoring
+
+  metrics-exporter:
+    build: /services/metrics_exporter
+    image: metrics-exporter
+    ports:
+      - "8000:8000"
+    networks:
+      - monitoring    
 
 networks:
   monitoring:
     driver: bridge
+
+volumes:
+  frontend-data:
+  redis-data:
