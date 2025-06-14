@@ -2,17 +2,23 @@ services:
   web-app:
     build: /services/web_app
     image: web-app
-    ports:
-      - "5000:5000"     
+    expose:
+      - "8000"
+    command: >
+      sh -c "gunicorn -b $BIND_ADDR:8000 app:app"
     environment:
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_QUEUE=${REDIS_QUEUE}
       - REDIS_DATA_COUNTER_KEY=${REDIS_DATA_COUNTER_KEY}
       - REDIS_RESPONSE_CHANNEL=${REDIS_RESPONSE_CHANNEL}
+      - DATABASE_PATH=${DATABASE_PATH}
       - DEVELOPMENT=0
+      - BIND_ADDR=${BIND_ADDR}
     networks:
       - monitoring
+    volumes:
+      - frontend-data:/app/app_data
 
   backend:
     build: /services/stl_generation
@@ -22,6 +28,16 @@ services:
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_QUEUE=${REDIS_QUEUE}
       - REDIS_RESPONSE_CHANNEL=${REDIS_RESPONSE_CHANNEL}
+    networks:
+      - monitoring
+
+  nginx:
+    build: /services/custom_nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - web-app
     networks:
       - monitoring
 
@@ -63,6 +79,7 @@ services:
 networks:
   monitoring:
     driver: bridge
+
 
 volumes:
   frontend-data:

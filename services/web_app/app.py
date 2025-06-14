@@ -55,7 +55,9 @@ assert development in [
 app = Flask(__name__, static_folder="static")
 app.secret_key = os.getenv("SECRET_KEY", "random_secret_key")
 
-DATABASE_PATH = os.getenv("DATABASE_PATH", "/app/sample.db")
+DATABASE_PATH = os.getenv("DATABASE_PATH", "/app/app_data/sample.db")
+database_folder = os.path.dirname(DATABASE_PATH)
+os.makedirs(database_folder, exist_ok=True) # Create the folder if it DNE
 
 users_table = UsersTable(DATABASE_PATH)
 
@@ -277,4 +279,4 @@ def account():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="127.0.0.1", port=5000, debug=True)

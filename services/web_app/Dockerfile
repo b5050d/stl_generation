@@ -19,6 +19,7 @@ RUN apt-get update && \
 RUN pip install redis && \
     pip install numpy && \
     pip install Flask && \
+    pip install gunicorn && \
     pip install opencv-python
 
 # Copy the rest of the application code
@@ -29,4 +30,5 @@ COPY templates/ templates/
 COPY static/ static/
 
 # Run the application
-CMD ["python", "app.py"]
+# CMD ["python", "app.py"]
+CMD ["gunicorn", "-b", "$BIND_ADDR:8000", "app:app"]
