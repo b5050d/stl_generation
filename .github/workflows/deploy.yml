@@ -55,25 +55,26 @@ jobs:
           BIND_ADDR: ${{ secrets.BIND_ADDR }}
         run: |
           ssh -o StrictHostKeyChecking=no b5050d@${{ secrets.DEPLOY_IP }} 'bash -s' <<EOF
-            cd /home/b5050d/stl_generation
+          cd /home/b5050d/stl_generation
 
-            # Write .env file
-            cat > .env <<EOT
-            REDIS_HOST=${REDIS_HOST}
-            REDIS_PORT=${REDIS_PORT}
-            REDIS_QUEUE=${REDIS_QUEUE}
-            REDIS_DATA_COUNTER_KEY=${REDIS_DATA_COUNTER_KEY}
-            REDIS_RESPONSE_CHANNEL=${REDIS_RESPONSE_CHANNEL}
-            DEVELOPMENT=${DEVELOPMENT}
-            SECRET_KEY=${SECRET_KEY}
-            DATABASE_PATH=${DATABASE_PATH}
-            GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
-            GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
-            BIND_ADDR=${BIND_ADDR}
-            EOT
+          # Write .env file
+          cat > .env <<EOT
+          REDIS_HOST=${REDIS_HOST}
+          REDIS_PORT=${REDIS_PORT}
+          REDIS_QUEUE=${REDIS_QUEUE}
+          REDIS_DATA_COUNTER_KEY=${REDIS_DATA_COUNTER_KEY}
+          REDIS_RESPONSE_CHANNEL=${REDIS_RESPONSE_CHANNEL}
+          DEVELOPMENT=${DEVELOPMENT}
+          SECRET_KEY=${SECRET_KEY}
+          DATABASE_PATH=${DATABASE_PATH}
+          GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
+          GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
+          BIND_ADDR=${BIND_ADDR}
+          EOT
 
-            git pull &&
-            docker-compose up -d --build &&
-            rm .env
+          git pull &&
+          docker-compose up -d --build &&
+          rm .env
           EOF
+
 
