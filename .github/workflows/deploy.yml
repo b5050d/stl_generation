@@ -20,18 +20,18 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_DEPLOY_KEY }}
 
       # - name: Deploy to VPS
-      #   env:
-      #       REDIS_HOST: ${{ secrets.REDIS_HOST }}
-      #       REDIS_PORT: ${{ secrets.REDIS_PORT }}
-      #       REDIS_QUEUE: ${{ secrets.REDIS_QUEUE }}
-      #       REDIS_DATA_COUNTER_KEY: ${{ secrets.REDIS_DATA_COUNTER_KEY }}
-      #       REDIS_RESPONSE_CHANNEL: ${{ secrets.REDIS_RESPONSE_CHANNEL }}
-      #       DEVELOPMENT: ${{ secrets.DEVELOPMENT }}
-      #       SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      #       DATABASE_PATH: ${{ secrets.DATABASE_PATH }}
-      #       GF_SECURITY_ADMIN_USER: ${{ secrets.GF_SECURITY_ADMIN_USER }}
-      #       GF_SECURITY_ADMIN_PASSWORD: ${{ secrets.GF_SECURITY_ADMIN_PASSWORD }}
-      #       BIND_ADDR: ${{ secrets.BIND_ADDR }}
+        # env:
+        #     REDIS_HOST: ${{ secrets.REDIS_HOST }}
+        #     REDIS_PORT: ${{ secrets.REDIS_PORT }}
+        #     REDIS_QUEUE: ${{ secrets.REDIS_QUEUE }}
+        #     REDIS_DATA_COUNTER_KEY: ${{ secrets.REDIS_DATA_COUNTER_KEY }}
+        #     REDIS_RESPONSE_CHANNEL: ${{ secrets.REDIS_RESPONSE_CHANNEL }}
+        #     DEVELOPMENT: ${{ secrets.DEVELOPMENT }}
+        #     SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        #     DATABASE_PATH: ${{ secrets.DATABASE_PATH }}
+        #     GF_SECURITY_ADMIN_USER: ${{ secrets.GF_SECURITY_ADMIN_USER }}
+        #     GF_SECURITY_ADMIN_PASSWORD: ${{ secrets.GF_SECURITY_ADMIN_PASSWORD }}
+        #     BIND_ADDR: ${{ secrets.BIND_ADDR }}
 
         # run: |
         #   ssh -o StrictHostKeyChecking=no b5050d@${{ secrets.DEPLOY_IP }} "
@@ -41,6 +41,18 @@ jobs:
         #   "
 
       - name: Deploy to VPS
+        env:
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          REDIS_PORT: ${{ secrets.REDIS_PORT }}
+          REDIS_QUEUE: ${{ secrets.REDIS_QUEUE }}
+          REDIS_DATA_COUNTER_KEY: ${{ secrets.REDIS_DATA_COUNTER_KEY }}
+          REDIS_RESPONSE_CHANNEL: ${{ secrets.REDIS_RESPONSE_CHANNEL }}
+          DEVELOPMENT: ${{ secrets.DEVELOPMENT }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DATABASE_PATH: ${{ secrets.DATABASE_PATH }}
+          GF_SECURITY_ADMIN_USER: ${{ secrets.GF_SECURITY_ADMIN_USER }}
+          GF_SECURITY_ADMIN_PASSWORD: ${{ secrets.GF_SECURITY_ADMIN_PASSWORD }}
+          BIND_ADDR: ${{ secrets.BIND_ADDR }}
         run: |
           ssh -o StrictHostKeyChecking=no b5050d@${{ secrets.DEPLOY_IP }} "
             cd /home/b5050d/stl_generation &&
