@@ -72,6 +72,7 @@ jobs:
             BIND_ADDR=${BIND_ADDR}
             EOF
 
+
             # Pull latest code and restart containers
             git pull &&
             docker-compose up -d --build && rm .env
