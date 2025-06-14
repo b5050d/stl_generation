@@ -1,6 +1,6 @@
 services:
   web-app:
-    build: /services/web_app
+    build: ./services/web_app
     image: web-app
     expose:
       - "8000"
@@ -21,7 +21,7 @@ services:
       - frontend-data:/app/app_data
 
   backend:
-    build: /services/stl_generation
+    build: ./services/stl_generation
     image: backend
     environment:
       - REDIS_HOST=${REDIS_HOST}
@@ -32,7 +32,7 @@ services:
       - monitoring
 
   nginx:
-    build: /services/custom_nginx
+    build: ./services/custom_nginx
     container_name: nginx
     ports:
       - "80:80"
@@ -42,7 +42,7 @@ services:
       - monitoring
 
   custom-redis:
-    build: /services/custom_redis
+    build: ./services/custom_redis
     image: custom-redis
     networks:
       - monitoring
@@ -50,7 +50,7 @@ services:
       - redis-data:/data
  
   custom-prometheus:
-    build: /services/custom_prometheus
+    build: ./services/custom_prometheus
     image: custom-prometheus
     ports:
       - "9090:9090"
@@ -58,7 +58,7 @@ services:
       - monitoring
 
   custom-grafana:
-    build: /services/custom_grafana
+    build: ./services/custom_grafana
     image: custom-grafana
     environment:
       - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
@@ -69,7 +69,7 @@ services:
       - monitoring
 
   metrics-exporter:
-    build: /services/metrics_exporter
+    build: ./services/metrics_exporter
     image: metrics-exporter
     ports:
       - "8000:8000"
