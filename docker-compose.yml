@@ -56,6 +56,8 @@ services:
       - "9090:9090"
     networks:
       - monitoring
+    volumes:
+      - prometheus-storage:/prometheus
 
   custom-grafana:
     build: ./services/custom_grafana
@@ -67,6 +69,8 @@ services:
       - "3000:3000"
     networks:
       - monitoring
+    volumes:
+      - grafana-storage:/var/lib/grafana
 
   metrics-exporter:
     build: ./services/metrics_exporter
@@ -80,7 +84,8 @@ networks:
   monitoring:
     driver: bridge
 
-
 volumes:
   frontend-data:
   redis-data:
+  prometheus-storage:
+  grafana-storage:

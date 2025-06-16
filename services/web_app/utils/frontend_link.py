@@ -15,6 +15,9 @@ REDIS_RESPONSE_CHANNEL = os.getenv("REDIS_RESPONSE_CHANNEL", "response_channel")
 
 
 class FrontendLink:
+    """
+    Class to handle connection to the backend processing scripts
+    """
     def __init__(self):
         print("Initializing the front end link")
         self.set_up_redis()

@@ -51,6 +51,7 @@ class UsersTable:
             "tokens",
             "total_generations",
             "date_joined",
+            "email_verified",
         ]
         self.field_formats = [
             "INTEGER PRIMARY KEY AUTOINCREMENT",
@@ -59,6 +60,7 @@ class UsersTable:
             "INTEGER NOT NULL",
             "INTEGER NOT NULL",
             "TEXT NOT NULL",
+            "INTEGER NOT NULL"
         ]
 
     def does_database_exist(self):
@@ -103,7 +105,8 @@ class UsersTable:
                     password_hash TEXT NOT NULL,
                     tokens INTEGER NOT NULL,
                     total_generations INTEGER NOT NULL,
-                    date_joined TEXT NOT NULL
+                    date_joined TEXT NOT NULL,
+                    email_verified INTEGER NOT NULL
                 )
             """
             )
@@ -154,7 +157,7 @@ class UsersTable:
             # print(query_string)
             # "INSERT INTO Users (username, password_hash, tokens, total_generations, date_joined) VALUES (?,?,?,?,?)"
             cursor.execute(
-                query_string, (username, password_hash, 0, 0, get_timestamp())
+                query_string, (username, password_hash, 0, 0, get_timestamp(), 0)
             )
 
             # Commit the changes

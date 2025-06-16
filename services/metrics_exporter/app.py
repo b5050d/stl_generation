@@ -33,6 +33,9 @@ telem_3 = Gauge(
 telem_4 = Gauge("signups", "Number of signups", registry=registry)
 telem_5 = Gauge("logins", "Number of Logins", registry=registry)
 telem_6 = Gauge("logouts", "Number of Logouts", registry=registry)
+telem_7 = Gauge(
+    "email_verifications", "Number of Email Verifications", registry=registry
+)
 
 
 def collect_metrics():
@@ -46,6 +49,7 @@ def collect_metrics():
         "telem:4",
         "telem:5",
         "telem:6",
+        "telem:7",
     ]
     vars = [
         telem_1,
@@ -54,6 +58,7 @@ def collect_metrics():
         telem_4,
         telem_5,
         telem_6,
+        telem_7,
     ]
 
     for key, var in zip(keys, vars):
