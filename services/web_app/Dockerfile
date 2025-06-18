@@ -20,12 +20,15 @@ RUN pip install redis && \
     pip install numpy && \
     pip install Flask && \
     pip install gunicorn && \
+    pip install Flask-Mail && \ 
+    pip install itsdangerous && \
+    pip install mock && \
     pip install opencv-python
 
 # Copy the rest of the application code
 COPY app.py .
-COPY database_methods.py .
-COPY frontend_link.py .
+COPY app_factory.py .
+COPY utils/ utils/  
 COPY templates/ templates/
 COPY static/ static/
 

@@ -3,11 +3,11 @@ Testing script for the database methods
 """
 
 import pytest
-import os, sys
+import os
+import sys
+
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from utils.database_methods import UsersTable, get_timestamp
-
-
 
 
 @pytest.fixture

@@ -1,5 +1,6 @@
-import pytest
-import os, sys
+import os
+import sys
+
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from utils.helper_methods import is_password_strong, is_valid_email
 
@@ -26,7 +27,7 @@ def test_is_password_strong():
     password = ""
     assert not is_password_strong(password)
 
-    
+
 def test_is_valid_email():
     email = "hi"
     assert not is_valid_email(email)
@@ -45,5 +46,3 @@ def test_is_valid_email():
 
     email = "hullo@lotr.com"
     assert is_valid_email(email)
-
-    

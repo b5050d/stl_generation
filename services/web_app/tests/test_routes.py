@@ -4,7 +4,7 @@ import sys
 from werkzeug.security import generate_password_hash
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from app import AppFactory
+from app_factory import AppFactory
 
 
 @pytest.fixture()

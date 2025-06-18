@@ -15,6 +15,7 @@ services:
       - DATABASE_PATH=${DATABASE_PATH}
       - DEVELOPMENT=0
       - BIND_ADDR=${BIND_ADDR}
+      - SECRET_KEY=${SECRET_KEY}
     networks:
       - monitoring
     volumes:

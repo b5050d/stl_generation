@@ -60,7 +60,7 @@ class UsersTable:
             "INTEGER NOT NULL",
             "INTEGER NOT NULL",
             "TEXT NOT NULL",
-            "INTEGER NOT NULL"
+            "INTEGER NOT NULL",
         ]
 
     def does_database_exist(self):
