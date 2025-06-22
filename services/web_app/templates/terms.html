@@ -1,45 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Terms of Service</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: 2em auto; padding: 0 1em; }
-    h1, h2 { color: #333; }
-    small { color: #888; }
-  </style>
-</head>
-<body>
-  <h1>Terms of Service</h1>
-  <p><small>Effective Date: [Insert Date]</small></p>
+{% extends "base.html" %}
+eaf stencil
+{% block title %}Terms of Service{% endblock %}
 
-  <h2>1. Use at Your Own Risk</h2>
+{% block content %}
+<section class="py-16 bg-gradient-to-r from-neutral-600 to-neutral-800">
+  <h1 class="text-4xl font-bold bg-gradient-to-r from-cyan-500 to-pink-500 bg-clip-text text-transparent leading-relaxed">
+  Terms of Service
+  </h1>
+
+  <p class="text-lg font-bold mb-6 text-white">
+    <small>Effective Date: [Insert Date]</small>
+  </p>
+
+  <h2 class="text-2xl font-bold text-pink-500 mb-6">
+  1. Use at Your Own Risk</h2>
   <p>This Service is provided “as is” and “as available.” We make <strong>no guarantees</strong> regarding availability, functionality, or uptime. We may change, suspend, or discontinue the Service <strong>at any time, without notice or liability</strong>.</p>
 
-  <h2>2. Account Registration</h2>
+  <h2 class="text-2xl font-bold text-pink-500 mb-6">
+  2. Account Registration</h2>
   <p>To use certain features, you may be required to register an account by providing your email address and setting a password. You are responsible for maintaining the confidentiality of your login information.</p>
-
-  <h2>3. Token Purchases</h2>
+  
+  <h2 class="text-2xl font-bold text-pink-500 mb-6">
+  3. Token Purchases</h2>
   <p>Users may purchase digital tokens to access or use certain features. All token sales are <strong>final</strong> and <strong>non-refundable</strong>, unless required by applicable law.</p>
 
-  <h2>4. No Warranty</h2>
+  <h2 class="text-2xl font-bold text-pink-500 mb-6">
+  4. No Warranty</h2>
   <p>We provide no warranties, express or implied, including (but not limited to) warranties of merchantability, fitness for a particular purpose, or non-infringement. We do <strong>not guarantee</strong> that the Service will be secure, error-free, or uninterrupted.</p>
 
-  <h2>5. Termination</h2>
-  <p>We reserve the right to terminate or suspend access to the Service at our sole discretion, for any reason, at any time. This includes permanently shutting down the Service.</p>
+  <h2 class="text-2xl font-bold text-pink-500 mb-6">
+  5. Termination</h2>
+  <p class="text-white">We reserve the right to terminate or suspend access to the Service at our sole discretion, for any reason, at any time. This includes permanently shutting down the Service.</p>
 
-  <h2>6. Data Handling</h2>
+  <h2 class="text-2xl font-bold text-pink-500 mb-6">
+  6. Data Handling</h2>
   <p>We store only the data you provide directly, such as your email and a hash of your password. While we use reasonable efforts to protect this data, <strong>we disclaim any responsibility for unauthorized access, data loss, or breaches</strong>.</p>
 
-  <h2>7. Limitation of Liability</h2>
+  <h2 class="text-2xl font-bold text-pink-500 mb-6">
+  7. Limitation of Liability</h2>
   <p>To the maximum extent permitted by law, [Your Name or Company] shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or for any loss of profits or revenues.</p>
 
-  <h2>8. Changes to These Terms</h2>
+  <h2 class="text-2xl font-bold text-pink-500 mb-6">
+  8. Changes to These Terms</h2>
   <p>We may modify these Terms at any time. Continued use of the Service after changes indicates acceptance of the updated terms.</p>
 
-  <h2>9. Governing Law</h2>
+  <h2 class="text-2xl font-bold text-pink-500 mb-6">
+  9. Governing Law</h2>
   <p>These Terms are governed by the laws of [Your Jurisdiction], without regard to its conflict of law principles.</p>
 
-</body>
-</html>
+</section>
+{% endblock %}

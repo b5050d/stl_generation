@@ -23,6 +23,20 @@ def init_routes(app):
     def index():
         return render_template("home.html")
 
+    @app.route("/tos")
+    def terms():
+        """
+        Route to serve the terms of service
+        """
+        return render_template("terms.html")
+
+    @app.route("/privacy")
+    def privacy():
+        """
+        Route to serve the privacy policy
+        """
+        return render_template("privacy.html")
+
     @app.route("/login", methods=["GET", "POST"])
     @force_log_out
     def login():
@@ -164,6 +178,18 @@ def init_routes(app):
             )
 
         return render_template("create.html")
+
+    # @app.route("/account", methods=["GET", "POST"])
+    # @login_required
+    # def account():
+    #     # Get the information from the user from the database
+    #     username = session["username"]
+
+    #     total_genearations = app.users_table.query_specific_user_data(
+    #         username, "total_generations"
+    #     )
+    #     tokens_remaining = app.users_table.query_specific_user_data(username, "tokens")
+    #     date_joined = app.users_table.query_specific_user_data(username, "date_joined")
 
     # @app.route("/confirm/<token>")
     # def confirm_email(token):

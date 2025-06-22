@@ -229,5 +229,25 @@ def test_upload_image(factory):
         assert response.status_code == 415  # Bad upload
 
 
-# def test_pass(factory):
-#     pass
+def test_terms(factory):
+    with factory.app.test_client() as client:
+        # Attempt get request
+        response = client.get("/tos")
+        assert response.status_code == 200
+        assert b"Terms of Service" in response.data
+
+        # Attempt post request
+        response = client.post("/tos", data={"username": "bad_data"})
+        assert response.status_code == 405
+
+
+def test_privacy(factory):
+    with factory.app.test_client() as client:
+        # Attempt get request
+        response = client.get("/privacy")
+        assert response.status_code == 200
+        assert b"Privacy Policy" in response.data
+
+        # Attempt post request
+        response = client.post("/tos", data={"username": "bad_data"})
+        assert response.status_code == 405
